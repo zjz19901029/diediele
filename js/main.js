@@ -1,61 +1,57 @@
-let defaultData = {
-    grid_w: 20, // 画布上每格的宽度
-    grid_x: 15, //画布X轴总格数
-    grid_y: 15, //画布Y轴总格数
-    level_sum: 3, //总关卡
-    level_now: 0, //当前关卡
-    grid_r: 1 //每格的圆点半径
+import data from './data'
+const window_w = canvas.width
+const window_h = canvas.height
+const playerCanvasWidth = 300
+const playerCanvasHeight = 300
+
+let playerCanvas = wx.createCanvas()
+playerCanvas.width = playerCanvasWidth
+playerCanvas.height = playerCanvasHeight
+let ctx = playerCanvas.getContext('2d')
+
+let ctx_bg = canvas.getContext('2d')
+let playerCanvasOffset = {
+    left: (window_w - playerCanvasWidth)/2,
+    top: 200
 }
-window.requestAnimFrame = (function () {
-    return window.requestAnimationFrame ||
-    window.webkitRequestAnimationFrame ||
-    window.mozRequestAnimationFrame ||
-    function (callback) {
-        window.setTimeout(callback, 6000 / 60)
-    }
-})()
+let level_now = 0
 
-let data
-let ctx, ctx_bg
-let canvasOffset
+function init() { //初始化
+    draw()
+    bindTouchEvent()
+}
 
-function init(container, gamedata) { //初始化
-    if (!$(container) || $(container).length == 0) {
-        return false
-    }
-    data = $.extend({}, defaultData, gamedata)
-    let width = data.grid_w * data.grid_x
-    let height = data.grid_w * data.grid_y
-    $(container).html(`<div style="position:relative;width:${width}px;height:${height}px"><canvas width="${width}" height="${height}"></canvas>
-    <canvas width="${width}" height="${height}"></canvas></div>`)
-    $(container).find("canvas").css({
-        "position": "absolute",
-        "left": 0,
-        "top": 0
-    })
-    ctx = $(container).find("canvas")[1].getContext('2d')
-    ctx_bg = $(container).find("canvas")[0].getContext('2d')
+function draw() {
     drawCanvasBg()
     drawShapes()
-    bindTouchEvent($(container).children("div"))
+    window.requestAnimationFrame(draw)
 }
 
 function drawCanvasBg() { //绘制画布基础背景方格
+    ctx_bg.clearRect(0, 0, window_w, window_h)
     ctx_bg.fillStyle = "#ccc"
+    ctx_bg.beginPath()
+    ctx_bg.moveTo(playerCanvasOffset.left, playerCanvasOffset.top)
+    ctx_bg.lineTo(playerCanvasOffset.left, playerCanvasOffset.top + playerCanvasHeight)
+    ctx_bg.lineTo(playerCanvasOffset.left + playerCanvasWidth, playerCanvasOffset.top + playerCanvasHeight)
+    ctx_bg.lineTo(playerCanvasOffset.left + playerCanvasWidth, playerCanvasOffset.top)
+    ctx_bg.lineTo(playerCanvasOffset.left, playerCanvasOffset.top)
+    ctx_bg.stroke()
     for (let i = 1; i < data.grid_x; i++) {
         for (let j = 1; j < data.grid_y; j++) {
             let x = i * data.grid_w
             let y = j * data.grid_w
             ctx_bg.beginPath()
-            ctx_bg.arc(x, y, data.grid_r, 0, 2*Math.PI)
+            ctx_bg.arc(x + playerCanvasOffset.left, y + playerCanvasOffset.top, data.grid_r, 0, 2*Math.PI)
             ctx_bg.closePath()
             ctx_bg.fill()
         }
     }
+    ctx_bg.drawImage(playerCanvas, playerCanvasOffset.left, playerCanvasOffset.top)
 }
 
 function drawShapes() { //绘制当前的图形
-    let shapes = data.game_items[data.level_now]
+    let shapes = data.game_items[level_now]
     ctx.clearRect(0, 0, data.grid_w * data.grid_x, data.grid_w * data.grid_y)
     ctx.globalCompositeOperation="xor"
     for (let i = 0; i < shapes.length; i++) {
@@ -68,47 +64,45 @@ function drawShapes() { //绘制当前的图形
                 break;
         }
     }
-    window.requestAnimFrame(drawShapes)
 }
 
-function bindTouchEvent($container) { //绑定触摸事件监听
+function bindTouchEvent() { //绑定触摸事件监听
     let startX, startY
     let targetItem // 拖动的目标图形
-    let shapes = data.game_items[data.level_now]
-    canvasOffset = $container.offset()
+    let shapes = data.game_items[level_now]
 
-    $container.on("touchstart", function() {
-        startX = window.event.touches[0].clientX
-        startY = window.event.touches[0].clientY
+    wx.onTouchStart(function(e) {
+        startX = e.touches[0].clientX
+        startY = e.touches[0].clientY
         for (let i = 0; i < shapes.length; i++) {
-            if (judgeItem(shapes[i], startX - canvasOffset.left, startY - canvasOffset.top)) { //判断是否按住某个图形
+            if (judgeItem(shapes[i], startX - playerCanvasOffset.left, startY - playerCanvasOffset.top)) { //判断是否按住某个图形
                 targetItem = shapes[i]
                 break
             }
         }
     })
 
-    $container.on("touchmove", function() {
+    wx.onTouchMove(function(e) {
         if (!targetItem) {
             return
         }
-        targetItem.x += (window.event.changedTouches[0].clientX - startX) / data.grid_w
-        targetItem.y += (window.event.changedTouches[0].clientY - startY) / data.grid_w
-        startX = window.event.changedTouches[0].clientX
-        startY = window.event.changedTouches[0].clientY
+        targetItem.x += (e.touches[0].clientX - startX) / data.grid_w
+        targetItem.y += (e.touches[0].clientY - startY) / data.grid_w
+        startX = e.touches[0].clientX
+        startY = e.touches[0].clientY
     })
 
-    $(document).on("touchmove", function() {
-        event.preventDefault()
-    })
+    // $(document).on("touchmove", function() {
+    //     event.preventDefault()
+    // })
 
-    $(document).on("touchend", function() {
+    wx.onTouchEnd(function() {
         if (!targetItem) {
             return
         }
         targetItem&&getItemStay(targetItem)
         targetItem = null
-        console.log(data.game_items[data.level_now])
+        console.log(data.game_items[level_now])
         if (judgeSuccess()) { //过关
             alert("下一关")
         }
@@ -188,12 +182,12 @@ function getItemStay(item) { //让图形按照栅格排版
 }
 
 function judgeSuccess() { //判断是否通关
-    let answers = data.answers[data.level_now]
+    let answers = data.answers[level_now]
     let success = true
     for (let a = 0; a < answers.length; a++) { //可能有多个摆放方式
         success = true
-        let answer = data.answers[data.level_now][a].split(",")
-        let shapes = data.game_items[data.level_now]
+        let answer = data.answers[level_now][a].split(",")
+        let shapes = data.game_items[level_now]
         for (let i = 0; i < shapes.length - 1; i++) {
             //判断各个图形的相对位置
             if (shapes[i + 1].x - shapes[i].x != answer[i + 1].split("|")[0] - answer[i].split("|")[0] || shapes[i + 1].y - shapes[i].y != answer[i + 1].split("|")[1] - answer[i].split("|")[1]) {
