@@ -1,6 +1,7 @@
 import gameData from './data/gameData'
 import config from './config'
 import tips from './tips/tips'
+import createjs from './libs/tweenjs.min'
 
 let instance
 
@@ -18,7 +19,6 @@ export default class DataBus {
 
 	init() {
 		this.stop = false //是否禁止用户操作
-		this.goNext = false //是否正在进入下一关
 		this.window_w = canvas.width
 		this.window_h = canvas.height
 		this.playerCanvas = wx.createCanvas() //玩家区域画布
@@ -48,6 +48,10 @@ export default class DataBus {
 		this.ctx_answer = this.answerCanvas.getContext('2d')
 		
 		this.gameData = gameData[this.level_now]
+
+		this.tweenParams = {
+			maskOpacity: 0
+		}
 	}
 
 	next() {
@@ -55,14 +59,21 @@ export default class DataBus {
 			tips.alert("已经是最后一关")
 		} else {
 			this.stop = true
-			this.goNext = true
-			this.level_now++
+			this.changeLevel()
+		}
+	}
+
+	changeLevel() {
+		this.level_now++
+		createjs.Tween.get(this.tweenParams).to({maskOpacity: 1}, 1).call(() => {
 			this.gameData.items = gameData[this.level_now].items
 			this.gameData.answers = gameData[this.level_now].answers
-			setTimeout(() => {
-				this.stop = false
-				this.goNext = false
-			}, 1000)
-		}
+		}).wait(1).to({maskOpacity: 0}, 1).call(() => {
+			this.stop = false
+		})
+	}
+
+	levelChanged() {
+		
 	}
 }

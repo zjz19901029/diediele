@@ -1,6 +1,7 @@
 
 import databus from '../databus'
 import drawShapes from './drawShapes'
+import drawLevelChange from './drawLevelChange'
 
 let DATA = new databus()
 
@@ -9,8 +10,6 @@ let playerCanvasOffset = DATA.playerCanvasOffset
 let playerCanvasWidth = DATA.playerCanvasWidth
 let playerCanvasHeight = DATA.playerCanvasHeight
 let gameData = DATA.gameData
-let mask = wx.createCanvas() //过场遮罩
-let opacity = 0
 
 function drawCanvasBg() { //绘制画布基础背景方格
     ctx_bg.clearRect(0, 0, DATA.window_w, DATA.window_h)
@@ -74,23 +73,11 @@ function drawPlayerShapes() { //绘制用户的图形
     ctx_bg.drawImage(DATA.playerCanvas, playerCanvasOffset.left, playerCanvasOffset.top)
 }
 
-function drawNext() {
-    opacity = opacity >= 1 ? opacity - 0.01 : opacity + 0.01
-    let ctx_mask = mask.getContext('2d')
-    ctx_mask.globalAlpha = opacity
-    ctx_mask.fillStyle="#fff"
-    ctx_mask.fillRect(0, 0, DATA.window_w, DATA.window_h)
-    ctx_bg.drawImage(mask, 0, 0)
-}
-
 function draw() {
-    if (DATA.goNext) { //如果正在进入下一关
-        drawNext()
-    } else {
-        drawCanvasBg()
-        drawAnswer()
-        drawPlayerShapes()
-    }
+    drawCanvasBg()
+    drawAnswer()
+    drawPlayerShapes()
+    drawLevelChange()
     window.requestAnimationFrame(draw)
 }
 
