@@ -12,7 +12,8 @@ let playerCanvasHeight = DATA.playerCanvasHeight
 let gameData = DATA.gameData
 
 function drawCanvasBg() { //绘制画布基础背景方格
-    ctx_bg.clearRect(0, 0, DATA.window_w, DATA.window_h)
+    ctx_bg.fillStyle="#fff"
+    ctx_bg.fillRect(0, 0, DATA.window_w, DATA.window_h)
     ctx_bg.fillStyle = "#ccc"
     ctx_bg.beginPath()
     ctx_bg.lineWidth = 1

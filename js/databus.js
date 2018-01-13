@@ -19,29 +19,30 @@ export default class DataBus {
 
 	init() {
 		this.stop = false //是否禁止用户操作
+		this.level_now = 0
 		this.window_w = canvas.width
 		this.window_h = canvas.height
 		this.playerCanvas = wx.createCanvas() //玩家区域画布
 		this.answerCanvas = wx.createCanvas() //答案区域画布
-
-		this.playerCanvas.width = this.playerCanvasWidth = config.playerCanvasWidth //玩家区域宽度
-		this.playerCanvas.height = this.playerCanvasHeight = config.playerCanvasHeight //玩家区域高度
-		this.answerCanvas.width = this.answerCanvasWidth = config.answerCanvasWidth //玩家区域宽度
-		this.answerCanvas.height = this.answerCanvasHeight = config.answerCanvasHeight //玩家区域高度
-		this.playerCanvasOffset = {
-			left: (this.window_w - this.playerCanvasWidth)/2,
-			top: config.playerCanvasTop
-		}
-		this.answerCanvasOffset = {
-			left: (this.window_w - this.answerCanvasWidth)/2,
-			top: config.answerCanvasTop
-		}
-		this.grid_w = config.grid_w //每个栅格的宽度
+		this.grid_w = Math.round((this.window_w - config.padding * 2) / config.grid_x) //每个栅格的宽度
 		this.grid_x = config.grid_x //每行格数
 		this.grid_y = config.grid_y //每列格数
 		this.grid_r = config.grid_r //圆点的半径
 
-		this.level_now = 0
+		this.playerCanvas.width = this.playerCanvasWidth = this.grid_w * config.grid_x //玩家区域宽度
+		this.playerCanvas.height = this.playerCanvasHeight = this.grid_w * config.grid_y //玩家区域高度
+		this.answerCanvas.width = this.answerCanvasWidth = this.grid_w * config.grid_answer_x //答案区域宽度
+		this.answerCanvas.height = this.answerCanvasHeight = this.grid_w * config.grid_answer_y //答案区域高度
+		let margin = Math.ceil((this.window_h - this.playerCanvasHeight - this.answerCanvasHeight) / 3)
+
+		this.playerCanvasOffset = {
+			left: (this.window_w - this.playerCanvasWidth)/2,
+			top: margin * 2 + this.answerCanvasHeight
+		}
+		this.answerCanvasOffset = {
+			left: (this.window_w - this.answerCanvasWidth)/2,
+			top: margin
+		}
 		
 		this.ctx = this.playerCanvas.getContext('2d')
 		this.ctx_bg = canvas.getContext('2d')
