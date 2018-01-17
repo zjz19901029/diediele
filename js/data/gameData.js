@@ -2,12 +2,12 @@ const data = [ //每关图形初始数据
     {
         items: [
             {
-                "width": 3,
+                "width": 4,
                 "height": 4,
-                "x": 3,
+                "x": 8,
                 "y": 2,
                 "shape": "triangle",
-                "direction": "l"
+                "direction": "l-d"
             },
             {
                 "width": 4,
@@ -15,15 +15,7 @@ const data = [ //每关图形初始数据
                 "x": 8,
                 "y": 2,
                 "shape": "triangle",
-                "direction": "r"
-            },
-            {
-                "width": 4,
-                "height": 4,
-                "x": 8,
-                "y": 2,
-                "shape": "triangle",
-                "direction": "d"
+                "direction": "r-d"
             },
             {
                 "width": 4,
@@ -32,6 +24,22 @@ const data = [ //每关图形初始数据
                 "y": 7,
                 "shape": "triangle",
                 "direction": "u"
+            },
+            {
+                "width": 4,
+                "height": 4,
+                "x": 5,
+                "y": 7,
+                "shape": "triangle",
+                "direction": "l-u"
+            },
+            {
+                "width": 4,
+                "height": 4,
+                "x": 5,
+                "y": 7,
+                "shape": "triangle",
+                "direction": "r-u"
             }
         ],
         answers: [ //每关答案
