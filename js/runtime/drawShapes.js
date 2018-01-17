@@ -1,4 +1,5 @@
 import databus from '../databus'
+import util from '../util'
 
 let DATA = new databus()
 
@@ -32,9 +33,10 @@ function drawCube(itemdata, ctx) { //绘制矩形
 function drawTriangle(itemdata, ctx) { //绘制三角形
     ctx.fillStyle = "#000"
     ctx.beginPath()
-    ctx.moveTo(itemdata.x * DATA.grid_w + (itemdata.width * DATA.grid_w / 2), itemdata.y * DATA.grid_w)
-    ctx.lineTo(itemdata.x * DATA.grid_w, itemdata.y * DATA.grid_w + itemdata.height * DATA.grid_w)
-    ctx.lineTo(itemdata.x * DATA.grid_w + itemdata.width * DATA.grid_w, itemdata.y * DATA.grid_w + itemdata.height * DATA.grid_w)
+    let position = util.getTrianglePosition(itemdata)
+    ctx.moveTo(position.x1, position.y1)
+    ctx.lineTo(position.x2, position.y2)
+    ctx.lineTo(position.x3, position.y3)
     ctx.closePath()
     ctx.fill()
 }

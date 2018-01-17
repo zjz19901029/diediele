@@ -1,4 +1,5 @@
 import databus from '../databus'
+import util from '../util'
 
 let DATA = new databus()
 let gameData = DATA.gameData
@@ -24,28 +25,15 @@ function judgeCube(shapeData, x, y) { //判断是否在矩形内部
     return false
 }
 
-function computeTriangle(shapeData, x, y) { //计算三角形的坐标
-    switch (shapeData.shape) {
-        case "triangle":
-            
-    }
-    let x1 = shapeData.x * DATA.grid_w
-    let y1 = (shapeData.y + shapeData.height) * DATA.grid_w
-    let x2 = (shapeData.x + shapeData.width) * DATA.grid_w
-    let y2 = (shapeData.y + shapeData.height) * DATA.grid_w
-    let x3 = (shapeData.x + shapeData.width) * DATA.grid_w  / 2
-    let y3 = shapeData.y * DATA.grid_w
-    return judgeTriangle(x1, y1, x2, y2, x3, y3)
-}
-
-function judgeTriangle(x1, y1, x2, y2, x3, y3) { //判断是否在三角形内部
-    let divisor = (y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3)
-    let a = ((y2 - y3) * (x - x3) + (x3 - x2) * (y - y3)) / divisor
-    let b = ((y3 - y1) * (x - x3) + (x1 - x3) * (y - y3)) / divisor
-    let c = 1 - a - b
-
+function judgeTriangle(shapeData, x0, y0) { //判断是否在三角形内部
+    let position = util.getTrianglePosition(shapeData)
+    let divisor = (position.y2 - position.y3)*(position.x1 - position.x3) + (position.x3 - position.x2)*(position.y1 - position.y3)
+    let a = ((position.y2 - position.y3)*(x0 - position.x3) + (position.x3 - position.x2)*(y0 - position.y3)) / divisor
+    let b = ((position.y3 - position.y1)*(x0 - position.x3) + (position.x1 - position.x3)*(y0 - position.y3)) / divisor
+    let c = 1 - a - b;
+  
     return a >= 0 && a <= 1 && b >= 0 && b <= 1 && c >= 0 && c <= 1
-}
+  }
 
 function getItemStay(item) { //让图形按照栅格排版
     item.x = Math.round(item.x)
