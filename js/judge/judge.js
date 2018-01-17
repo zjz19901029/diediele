@@ -24,13 +24,21 @@ function judgeCube(shapeData, x, y) { //判断是否在矩形内部
     return false
 }
 
-function judgeTriangle(shapeData, x, y) { //判断是否在三角形内部
+function computeTriangle(shapeData, x, y) { //计算三角形的坐标
+    switch (shapeData.shape) {
+        case "triangle":
+            
+    }
     let x1 = shapeData.x * DATA.grid_w
     let y1 = (shapeData.y + shapeData.height) * DATA.grid_w
     let x2 = (shapeData.x + shapeData.width) * DATA.grid_w
     let y2 = (shapeData.y + shapeData.height) * DATA.grid_w
     let x3 = (shapeData.x + shapeData.width) * DATA.grid_w  / 2
     let y3 = shapeData.y * DATA.grid_w
+    return judgeTriangle(x1, y1, x2, y2, x3, y3)
+}
+
+function judgeTriangle(x1, y1, x2, y2, x3, y3) { //判断是否在三角形内部
     let divisor = (y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3)
     let a = ((y2 - y3) * (x - x3) + (x3 - x2) * (y - y3)) / divisor
     let b = ((y3 - y1) * (x - x3) + (x1 - x3) * (y - y3)) / divisor
