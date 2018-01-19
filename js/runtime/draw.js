@@ -6,40 +6,32 @@ import easeljs from '../libs/easeljs'
 
 let DATA = new databus()
 
-let canvas_game_bg = wx.createCanvas()
-let ctx_game_bg = canvas_game_bg.getContext('2d')
 let playerCanvasOffset = DATA.playerCanvasOffset
 let playerCanvasWidth = DATA.playerCanvasWidth
 let playerCanvasHeight = DATA.playerCanvasHeight
 let gameData = DATA.gameData
-let canvas_game_bg_img
+
 let gameArea = new easeljs.Container()
 let drawArea = new easeljs.Container()
+let answerArea = new easeljs.Container()
 drawArea.x = DATA.playerCanvasOffset.left
 drawArea.y = DATA.playerCanvasOffset.top
 drawArea.compositeOperation = "xor"
+answerArea.x = DATA.answerCanvasOffset.left
+answerArea.y = DATA.answerCanvasOffset.top
+answerArea.compositeOperation = "xor"
 
 function drawCanvasBg() { //绘制画布基础背景方格
-    ctx_game_bg.fillStyle="#fff"
-    ctx_game_bg.fillRect(0, 0, DATA.window_w, DATA.window_h)
-    ctx_game_bg.fillStyle = "#ccc"
-    ctx_game_bg.beginPath()
-    ctx_game_bg.lineWidth = 1
-    ctx_game_bg.strokeStyle = "#666"
-    ctx_game_bg.moveTo(playerCanvasOffset.left, playerCanvasOffset.top)
-    ctx_game_bg.lineTo(playerCanvasOffset.left, playerCanvasOffset.top + playerCanvasHeight)
-    ctx_game_bg.lineTo(playerCanvasOffset.left + playerCanvasWidth, playerCanvasOffset.top + playerCanvasHeight)
-    ctx_game_bg.lineTo(playerCanvasOffset.left + playerCanvasWidth, playerCanvasOffset.top)
-    ctx_game_bg.lineTo(playerCanvasOffset.left, playerCanvasOffset.top)
-    ctx_game_bg.stroke()
+    let s = new easeljs.Shape()
+    s.graphics.f("#fff").s("#666").rect(playerCanvasOffset.left, playerCanvasOffset.top, playerCanvasHeight, playerCanvasHeight)
+    gameArea.addChild(s)
     for (let i = 1; i < DATA.grid_x; i++) {
         for (let j = 1; j < DATA.grid_y; j++) {
             let x = i * DATA.grid_w
             let y = j * DATA.grid_w
-            ctx_game_bg.beginPath()
-            ctx_game_bg.arc(x + playerCanvasOffset.left, y + playerCanvasOffset.top, DATA.grid_r, 0, 2*Math.PI)
-            ctx_game_bg.closePath()
-            ctx_game_bg.fill()
+            s = new easeljs.Shape()
+            s.graphics.f("#ccc").s("#fff").arc(x + playerCanvasOffset.left, y + playerCanvasOffset.top, DATA.grid_r, 0, 2*Math.PI)
+            gameArea.addChild(s)
         }
     }
 }
@@ -72,23 +64,22 @@ function drawAnswer() { //绘制答案图形
         shape.x += minusX
         shape.y += minusY
     })
-    drawShapes(shapes, DATA.answerCanvas)
-    ctx_game_bg.drawImage(DATA.answerCanvas, DATA.answerCanvasOffset.left, DATA.answerCanvasOffset.top)
+    drawShapes(shapes, answerArea)
+    gameArea.addChild(answerArea)
 }
 
 function drawPlayerShapes() { //绘制用户的图形
     let shapes = gameData.items
     drawShapes(shapes, drawArea)
     gameArea.addChild(drawArea)
-    //ctx_game_bg.drawImage(DATA.playerCanvas, playerCanvasOffset.left, playerCanvasOffset.top)
 }
 
 function draw() {
     if (DATA.state != "playing") {
         return
     }
-    // drawCanvasBg()
-    // drawAnswer()
+    drawCanvasBg()
+    drawAnswer()
     drawPlayerShapes()
     //drawLevelChange(ctx_game_bg)
     // DATA.stage.removeChild(canvas_game_bg_img)

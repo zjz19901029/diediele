@@ -4,7 +4,7 @@ const config = {
     grid_y: 15, //每列格数
     grid_answer_x: 9, //答案区域每行格数
     grid_answer_y: 9, //答案区域每列格数
-    grid_r: 1 //圆点的半径
+    grid_r: 2 //圆点的半径
 }
 
 export default config
