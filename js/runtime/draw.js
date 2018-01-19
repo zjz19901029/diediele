@@ -2,48 +2,56 @@
 import databus from '../databus'
 import drawShapes from './drawShapes'
 import drawLevelChange from './drawLevelChange'
+import easeljs from '../libs/easeljs'
 
 let DATA = new databus()
 
-let ctx_bg = DATA.ctx_bg
+let canvas_game_bg = wx.createCanvas()
+let ctx_game_bg = canvas_game_bg.getContext('2d')
 let playerCanvasOffset = DATA.playerCanvasOffset
 let playerCanvasWidth = DATA.playerCanvasWidth
 let playerCanvasHeight = DATA.playerCanvasHeight
 let gameData = DATA.gameData
+let canvas_game_bg_img
+let gameArea = new easeljs.Container()
+let drawArea = new easeljs.Container()
+drawArea.x = DATA.playerCanvasOffset.left
+drawArea.y = DATA.playerCanvasOffset.top
+drawArea.compositeOperation = "xor"
 
 function drawCanvasBg() { //绘制画布基础背景方格
-    ctx_bg.fillStyle="#fff"
-    ctx_bg.fillRect(0, 0, DATA.window_w, DATA.window_h)
-    ctx_bg.fillStyle = "#ccc"
-    ctx_bg.beginPath()
-    ctx_bg.lineWidth = 1
-    ctx_bg.strokeStyle = "#666"
-    ctx_bg.moveTo(playerCanvasOffset.left, playerCanvasOffset.top)
-    ctx_bg.lineTo(playerCanvasOffset.left, playerCanvasOffset.top + playerCanvasHeight)
-    ctx_bg.lineTo(playerCanvasOffset.left + playerCanvasWidth, playerCanvasOffset.top + playerCanvasHeight)
-    ctx_bg.lineTo(playerCanvasOffset.left + playerCanvasWidth, playerCanvasOffset.top)
-    ctx_bg.lineTo(playerCanvasOffset.left, playerCanvasOffset.top)
-    ctx_bg.stroke()
+    ctx_game_bg.fillStyle="#fff"
+    ctx_game_bg.fillRect(0, 0, DATA.window_w, DATA.window_h)
+    ctx_game_bg.fillStyle = "#ccc"
+    ctx_game_bg.beginPath()
+    ctx_game_bg.lineWidth = 1
+    ctx_game_bg.strokeStyle = "#666"
+    ctx_game_bg.moveTo(playerCanvasOffset.left, playerCanvasOffset.top)
+    ctx_game_bg.lineTo(playerCanvasOffset.left, playerCanvasOffset.top + playerCanvasHeight)
+    ctx_game_bg.lineTo(playerCanvasOffset.left + playerCanvasWidth, playerCanvasOffset.top + playerCanvasHeight)
+    ctx_game_bg.lineTo(playerCanvasOffset.left + playerCanvasWidth, playerCanvasOffset.top)
+    ctx_game_bg.lineTo(playerCanvasOffset.left, playerCanvasOffset.top)
+    ctx_game_bg.stroke()
     for (let i = 1; i < DATA.grid_x; i++) {
         for (let j = 1; j < DATA.grid_y; j++) {
             let x = i * DATA.grid_w
             let y = j * DATA.grid_w
-            ctx_bg.beginPath()
-            ctx_bg.arc(x + playerCanvasOffset.left, y + playerCanvasOffset.top, DATA.grid_r, 0, 2*Math.PI)
-            ctx_bg.closePath()
-            ctx_bg.fill()
+            ctx_game_bg.beginPath()
+            ctx_game_bg.arc(x + playerCanvasOffset.left, y + playerCanvasOffset.top, DATA.grid_r, 0, 2*Math.PI)
+            ctx_game_bg.closePath()
+            ctx_game_bg.fill()
         }
     }
 }
 
 function drawAnswer() { //绘制答案图形
-    let answer = gameData.answers[0].split(",")
+    let answer = gameData.answers[0].split("|")
     let shapes = []
     let minX, minY, maxX
     for (let i = 0; i < answer.length; i++) {
         shapes[i] = {...gameData.items[i]}
-        let x = +answer[i].split("|")[0]
-        let y = +answer[i].split("|")[1]
+        let x = +answer[i].split(",")[0]
+        let y = +answer[i].split(",")[1]
         shapes[i].x = x
         shapes[i].y = y
         if (!minX || x < minX) { //判断当前图形的左边X坐标是否是整体的最左边
@@ -65,21 +73,30 @@ function drawAnswer() { //绘制答案图形
         shape.y += minusY
     })
     drawShapes(shapes, DATA.answerCanvas)
-    ctx_bg.drawImage(DATA.answerCanvas, DATA.answerCanvasOffset.left, DATA.answerCanvasOffset.top)
+    ctx_game_bg.drawImage(DATA.answerCanvas, DATA.answerCanvasOffset.left, DATA.answerCanvasOffset.top)
 }
 
 function drawPlayerShapes() { //绘制用户的图形
     let shapes = gameData.items
-    drawShapes(shapes, DATA.playerCanvas)
-    ctx_bg.drawImage(DATA.playerCanvas, playerCanvasOffset.left, playerCanvasOffset.top)
+    drawShapes(shapes, drawArea)
+    gameArea.addChild(drawArea)
+    //ctx_game_bg.drawImage(DATA.playerCanvas, playerCanvasOffset.left, playerCanvasOffset.top)
 }
 
 function draw() {
-    drawCanvasBg()
-    drawAnswer()
+    if (DATA.state != "playing") {
+        return
+    }
+    // drawCanvasBg()
+    // drawAnswer()
     drawPlayerShapes()
-    drawLevelChange()
-    window.requestAnimationFrame(draw)
+    //drawLevelChange(ctx_game_bg)
+    // DATA.stage.removeChild(canvas_game_bg_img)
+    // canvas_game_bg_img = new easeljs.Bitmap(canvas_game_bg)
+    DATA.stage.addChild(gameArea)
+    DATA.stage.update()
+    //window.requestAnimationFrame(draw)
+    //easeljs.Ticker.addEventListener("tick")
 }
 
 module.exports = draw

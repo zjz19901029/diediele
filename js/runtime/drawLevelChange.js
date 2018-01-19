@@ -4,7 +4,7 @@ let DATA = new databus()
 let mask = wx.createCanvas() //过场遮罩
 let level_r = 80 //显示关数圆的半径
 
-function drawLevelChange() {
+function drawLevelChange(ctx) {
     let ctx_mask = mask.getContext('2d')
     ctx_mask.clearRect(0, 0, DATA.window_w, DATA.window_h)
     ctx_mask.globalAlpha = DATA.tweenParams.maskOpacity
@@ -17,6 +17,6 @@ function drawLevelChange() {
     ctx_mask.font="50px Arial"
     ctx_mask.fillText(DATA.level_now + 1, DATA.window_w / 2, DATA.window_h / 2 + 20, 160)
     ctx_mask.textAlign="center"
-    DATA.ctx_bg.drawImage(mask, 0, 0)
+    ctx.drawImage(mask, 0, 0)
 }
 export default drawLevelChange

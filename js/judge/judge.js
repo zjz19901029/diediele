@@ -55,11 +55,11 @@ function judgeSuccess() { //判断是否通关
     let success = true
     for (let a = 0; a < answers.length; a++) { //可能有多个摆放方式
         success = true
-        let answer = answers[a].split(",")
+        let answer = answers[a].split("|")
         let shapes = gameData.items
         for (let i = 0; i < shapes.length - 1; i++) {
             //判断各个图形的相对位置
-            if (shapes[i + 1].x - shapes[i].x != answer[i + 1].split("|")[0] - answer[i].split("|")[0] || shapes[i + 1].y - shapes[i].y != answer[i + 1].split("|")[1] - answer[i].split("|")[1]) {
+            if (shapes[i + 1].x - shapes[i].x != answer[i + 1].split(",")[0] - answer[i].split(",")[0] || shapes[i + 1].y - shapes[i].y != answer[i + 1].split(",")[1] - answer[i].split(",")[1]) {
                 success = false
                 break
             }
