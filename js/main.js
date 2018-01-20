@@ -3,6 +3,7 @@ import draw from './runtime/draw'
 import bindEvent from './event/event'
 import Bmob from './libs/bmob.js'
 
+
 function init() { //初始化
     wx.login({
         success: function () {

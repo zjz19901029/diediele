@@ -3,15 +3,43 @@ import databus from '../databus'
 
 let DATA = new databus()
 let gameData = DATA.gameData
+let startX, startY
+let targetItem // 拖动的目标图形
 
-function bindTouchEvent(shape) { //绑定触摸事件监听
-    let startX, startY
-    let targetItem // 拖动的目标图形
-    console.log(shape)
-    shape.on("touchtsart", (e) => {
-        console.log(e)
-        shape.x = e.touches[0].clientX
-        shape.y = e.touches[0].clientY
+function bindTouchEvent(shape, onChange) { //绑定触摸事件监听
+    
+    shape.on("mousedown", (e) => {
+        if (DATA.state != "playing") { //当前禁止操作
+            return false
+        }
+        startX = e.stageX
+        startY = e.stageY
+        targetItem = shape
+    })
+
+    DATA.stage.on("pressmove", (e) => {
+        if (!targetItem || DATA.state != "playing") { //当前禁止操作
+            return false
+        }
+        targetItem.x += (e.stageX - startX)
+        targetItem.y += (e.stageY - startY)
+        targetItem.localData.x += (e.stageX - startX) / DATA.grid_w
+        targetItem.localData.y += (e.stageY - startY) / DATA.grid_w
+        startX = e.stageX
+        startY = e.stageY
+        DATA.stage.update()
+    })
+
+    DATA.stage.on("pressup", (e) => {
+        if (!targetItem || DATA.state != "playing") { //当前禁止操作
+            return false
+        }
+        targetItem&&judge.getItemStay(targetItem)
+        targetItem = null
+        onChange&&onChange()
+        // if (judge.judgeSuccess()) { //过关
+        //     DATA.next()
+        // }
     })
 
     // wx.onTouchStart(function(e) {

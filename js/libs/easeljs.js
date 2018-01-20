@@ -16483,7 +16483,6 @@ this.createjs = this.createjs||{};
 			var touch = touches[i];
 			var id = touch.identifier;
 			if (touch.target != stage.canvas) { continue; }
-
 			if (type == "touchstart") {
 				this._handleStart(stage, id, e, touch.pageX, touch.pageY);
 			} else if (type == "touchmove") {

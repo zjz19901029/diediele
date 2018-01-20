@@ -26,8 +26,8 @@ export default class DataBus {
 		this.level_now = 0
 		this.window_w = canvas.width
 		this.window_h = canvas.height
-		this.playerCanvas = wx.createCanvas() //玩家区域画布
-		this.answerCanvas = wx.createCanvas() //答案区域画布
+		this.playerCanvas = {} //玩家区域画布
+		this.answerCanvas = {} //答案区域画布
 		this.grid_w = Math.round((this.window_w - config.padding * 2) / config.grid_x) //每个栅格的宽度
 		this.grid_x = config.grid_x //每行格数
 		this.grid_y = config.grid_y //每列格数
@@ -48,9 +48,7 @@ export default class DataBus {
 			top: margin
 		}
 		
-		this.ctx = this.playerCanvas.getContext('2d')
 		this.ctx_bg = canvas.getContext('2d')
-		this.ctx_answer = this.answerCanvas.getContext('2d')
 		
 		this.gameData = {
 			items: gameData[this.level_now].items,

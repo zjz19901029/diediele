@@ -36,18 +36,23 @@ function judgeTriangle(shapeData, x0, y0) { //判断是否在三角形内部
   }
 
 function getItemStay(item) { //让图形按照栅格排版
-    item.x = Math.round(item.x)
-    item.y = Math.round(item.y)
-    if (item.x > DATA.grid_x - item.width) {
-        item.x = DATA.grid_x - item.width
-    } else if (item.x < 0) {
-        item.x = 0
+    item.localData.x = Math.round(item.localData.x)
+    item.localData.y = Math.round(item.localData.y)
+    
+    if (item.localData.x > DATA.grid_x - item.localData.width) {
+        item.localData.x = DATA.grid_x - item.localData.width
+    } else if (item.localData.x < 0) {
+        item.localData.x = 0
     }
-    if (item.y > DATA.grid_y - item.height) {
-        item.y = DATA.grid_y - item.height
-    } else if (item.y < 0) {
-        item.y = 0
+    if (item.localData.y > DATA.grid_y - item.localData.height) {
+        item.localData.y = DATA.grid_y - item.localData.height
+    } else if (item.localData.y < 0) {
+        item.localData.y = 0
     }
+    item.x = item.localData.x * DATA.grid_w
+    item.y = item.localData.y * DATA.grid_w
+    console.log(item)
+    DATA.stage.update()
 }
 
 function judgeSuccess() { //判断是否通关
