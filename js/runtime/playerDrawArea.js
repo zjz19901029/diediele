@@ -5,7 +5,7 @@ import drawShapes from './drawShapes'
 
 let DATA = new databus()
 
-export default class playerDrawArea {
+export default class playerDrawArea { //生成用户操作的区域
     constructor(data, onChangeCb) {
         let playerDrawCanvas = wx.createCanvas()
         this.stage = new easeljs.Stage(playerDrawCanvas)
@@ -16,7 +16,7 @@ export default class playerDrawArea {
     }
 
     init(onChangeCb) {
-        drawShapes(this.data, this.stage, playEvent, () => {
+        drawShapes(this.data, this.stage, playEvent, () => { //绑定操作区域的图形操作事件，以及每次操作之后的回调
             onChangeCb&&onChangeCb(this.data)
         })
     }

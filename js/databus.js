@@ -1,7 +1,7 @@
 import gameData from './data/gameData'
 import config from './config'
 import tips from './tips/tips'
-import createjs from './libs/tweenjs.min'
+import tweenjs from './libs/tweenjs.min'
 import easeljs from './libs/easeljs'
 
 let instance
@@ -18,6 +18,21 @@ export default class DataBus {
 		this.stage = new easeljs.Stage(canvas)
 		easeljs.Touch.enable(this.stage)
 		easeljs.Ticker.timingMode = easeljs.Ticker.RAF
+
+		this.gameArea = new easeljs.Container()
+		this.menuArea = new easeljs.Container()
+		this.createArea = new easeljs.Container()
+		let mask = new easeljs.Shape()
+		mask.graphics.f("#fff").r(0, 0, this.window_w, this.window_h)
+		this.stage.addChildAt(this.gameArea, this.menuArea, this.createArea, mask)
+		this.tweenParams = {
+			maskOpacity: 0
+		}
+		easeljs.Ticker.addEventListener("tick",() => {
+			mask.alpha = this.tweenParams.maskOpacity
+			this.stage.update()
+		})
+
 		this.init()
 	}
 
@@ -55,9 +70,16 @@ export default class DataBus {
 			answers: this.computeAnswer(gameData[this.level_now])
 		}
 
-		this.tweenParams = {
-			maskOpacity: 0
-		}
+	}
+
+	changeState(state) {
+		this.showMask(() => {
+			this.state = state
+		})
+	}
+
+	showMask(callback) {
+		tweenjs.Tween.get(this.tweenParams).to({maskOpacity: 1}, 1).call(callback).wait(1).to({maskOpacity: 0}, 1)
 	}
 
 	next() { //下一关
@@ -71,11 +93,9 @@ export default class DataBus {
 
 	changeLevel() { //切换关卡
 		this.level_now++
-		createjs.Tween.get(this.tweenParams).to({maskOpacity: 1}, 1).call(() => {
+		this.showMask(() => {
 			this.gameData.items = gameData[this.level_now].items
 			this.gameData.answers = this.computeAnswer(gameData[this.level_now])
-		}).wait(1).to({maskOpacity: 0}, 1).call(() => {
-			this.state = "playing"
 		})
 	}
 

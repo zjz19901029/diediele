@@ -4,6 +4,7 @@ import drawShapes from './drawShapes'
 import drawLevelChange from './drawLevelChange'
 import easeljs from '../libs/easeljs'
 import drawPlayerArea from './playerDrawArea'
+import judge from '../judge/judge'
 
 
 let DATA = new databus()
@@ -13,7 +14,7 @@ let playerCanvasWidth = DATA.playerCanvasWidth
 let playerCanvasHeight = DATA.playerCanvasHeight
 let gameData = DATA.gameData
 
-let gameArea = new easeljs.Container()
+let gameArea = DATA.gameArea
 let bgArea = new easeljs.Container()
 let answerArea = new easeljs.Container()
 bgArea.compositeOperation = ""
@@ -72,7 +73,10 @@ function drawAnswer() { //绘制答案图形
 function drawPlayerShapes() { //绘制用户的图形
     let shapes = gameData.items
     let playerStage = new drawPlayerArea(shapes, function(data) {
-        console.log(data)
+        if (judge.judgeSuccess(data, gameData.answers)) { //过关
+            console.log("success")
+            DATA.next()
+        }
     }).stage
     playerStage.x = DATA.playerCanvasOffset.left
     playerStage.y = DATA.playerCanvasOffset.top
@@ -90,7 +94,6 @@ function draw() {
     //drawLevelChange(ctx_game_bg)
     // DATA.stage.removeChild(canvas_game_bg_img)
     // canvas_game_bg_img = new easeljs.Bitmap(canvas_game_bg)
-    DATA.stage.addChild(gameArea)
     DATA.stage.update()
     //window.requestAnimationFrame(draw)
     //easeljs.Ticker.addEventListener("tick")
