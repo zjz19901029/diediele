@@ -31,7 +31,7 @@
 // extend.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+var createjs = createjs||{}
 
 /**
  * @class Utility Methods
@@ -67,7 +67,7 @@ createjs.extend = function(subclass, superclass) {
 // promote.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 /**
  * @class Utility Methods
@@ -127,7 +127,7 @@ createjs.promote = function(subclass, prefix) {
 // indexOf.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 /**
  * @class Utility Methods
@@ -159,7 +159,7 @@ createjs.indexOf = function (array, searchElement){
 // UID.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -205,7 +205,7 @@ this.createjs = this.createjs||{};
 // deprecate.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 /**
  * @class Utility Methods
@@ -247,7 +247,7 @@ createjs.deprecate = function(fallbackMethod, name) {
 // Event.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -461,7 +461,7 @@ this.createjs = this.createjs||{};
 // EventDispatcher.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -842,7 +842,7 @@ this.createjs = this.createjs||{};
 // Ticker.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -1425,7 +1425,7 @@ this.createjs = this.createjs||{};
 // VideoBuffer.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -1525,7 +1525,7 @@ this.createjs = this.createjs||{};
 // MouseEvent.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -1696,7 +1696,7 @@ this.createjs = this.createjs||{};
 // Matrix2D.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -2198,7 +2198,7 @@ this.createjs = this.createjs||{};
 // DisplayProps.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -2355,7 +2355,7 @@ this.createjs = this.createjs||{};
 // Point.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -2448,7 +2448,7 @@ this.createjs = this.createjs||{};
 // Rectangle.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -2656,7 +2656,7 @@ this.createjs = this.createjs||{};
 // ButtonHelper.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -2889,7 +2889,7 @@ this.createjs = this.createjs||{};
 // Shadow.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -2985,7 +2985,7 @@ this.createjs = this.createjs||{};
 // SpriteSheet.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -3584,7 +3584,7 @@ this.createjs = this.createjs||{};
 // Graphics.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -5936,7 +5936,7 @@ this.createjs = this.createjs||{};
 // DisplayObject.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -7187,7 +7187,7 @@ this.createjs = this.createjs||{};
 // Container.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -7871,7 +7871,7 @@ this.createjs = this.createjs||{};
 // Stage.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -8715,7 +8715,7 @@ this.createjs = this.createjs||{};
 // StageGL.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 /*
  * README IF EDITING:
@@ -11114,7 +11114,7 @@ this.createjs = this.createjs||{};
 // Bitmap.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	
@@ -11319,7 +11319,7 @@ this.createjs = this.createjs||{};
 // Sprite.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -11772,7 +11772,7 @@ this.createjs = this.createjs||{};
 // Shape.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -11879,7 +11879,7 @@ this.createjs = this.createjs||{};
 // Text.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -12274,7 +12274,7 @@ this.createjs = this.createjs||{};
 // BitmapText.js
 //##############################################################################
 
-this.createjs = this.createjs || {};
+
 
 (function () {
 	"use strict";
@@ -12605,7 +12605,7 @@ this.createjs = this.createjs || {};
 // MovieClip.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -13335,7 +13335,7 @@ this.createjs = this.createjs||{};
 // SpriteSheetUtils.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -13485,7 +13485,7 @@ this.createjs = this.createjs||{};
 // SpriteSheetBuilder.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -13997,7 +13997,7 @@ this.createjs = this.createjs||{};
 // DOMElement.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -14265,7 +14265,7 @@ this.createjs = this.createjs||{};
 // Filter.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -14426,7 +14426,7 @@ this.createjs = this.createjs||{};
 // BitmapCache.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -14953,7 +14953,7 @@ this.createjs = this.createjs||{};
 // BlurFilter.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -15400,7 +15400,7 @@ this.createjs = this.createjs||{};
 // AlphaMapFilter.js
 //##############################################################################
 
-this.createjs = this.createjs || {};
+
 
 (function () {
 	"use strict";
@@ -15568,7 +15568,7 @@ this.createjs = this.createjs || {};
 // AlphaMaskFilter.js
 //##############################################################################
 
-this.createjs = this.createjs || {};
+
 
 (function () {
 	"use strict";
@@ -15702,7 +15702,7 @@ this.createjs = this.createjs || {};
 // ColorFilter.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -15868,7 +15868,7 @@ this.createjs = this.createjs||{};
 // ColorMatrix.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -16212,7 +16212,7 @@ this.createjs = this.createjs||{};
 // ColorMatrixFilter.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -16341,7 +16341,7 @@ this.createjs = this.createjs||{};
 // Touch.js
 //##############################################################################
 
-this.createjs = this.createjs||{};
+
 
 (function() {
 	"use strict";
@@ -16633,7 +16633,7 @@ this.createjs = this.createjs||{};
 // version.js
 //##############################################################################
 
-this.createjs = this.createjs || {};
+
 
 (function() {
 	"use strict";

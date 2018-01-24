@@ -5,7 +5,7 @@ let DATA = new databus()
 let gameData = DATA.gameData
 
 function judgeItem(shapeData, x, y) { //判断用户按在哪个图形上
-    switch (shapeData.shape) {
+    switch (shapeData.localData.shape) {
         case "cube":
             return judgeCube(shapeData, x, y)
             break;
@@ -16,17 +16,18 @@ function judgeItem(shapeData, x, y) { //判断用户按在哪个图形上
 }
 
 function judgeCube(shapeData, x, y) { //判断是否在矩形内部
-    if (x > shapeData.x * DATA.grid_w
-        && x < (shapeData.x + shapeData.width) * DATA.grid_w
-        && y > shapeData.y * DATA.grid_w
-        && y < (shapeData.y + shapeData.height) * DATA.grid_w) {
+    console.log(shapeData.getBounds())
+    if (x > shapeData.x
+        && x < shapeData.x + shapeData.localData.width * DATA.grid_w
+        && y > shapeData.y
+        && y < shapeData.y + shapeData.localData.height * DATA.grid_w){
         return true
     }
     return false
 }
 
 function judgeTriangle(shapeData, x0, y0) { //判断是否在三角形内部
-    let position = util.getTrianglePosition(shapeData)
+    let position = util.getTrianglePosition(shapeData.localData, DATA.grid_w, shapeData.x, shapeData.y)//传入平移坐标
     let divisor = (position.y2 - position.y3)*(position.x1 - position.x3) + (position.x3 - position.x2)*(position.y1 - position.y3)
     let a = ((position.y2 - position.y3)*(x0 - position.x3) + (position.x3 - position.x2)*(y0 - position.y3)) / divisor
     let b = ((position.y3 - position.y1)*(x0 - position.x3) + (position.x1 - position.x3)*(y0 - position.y3)) / divisor

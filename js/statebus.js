@@ -1,0 +1,43 @@
+import databus from './databus'
+import easeljs from './libs/easeljs.min'
+import tips from './tips/tips'
+import gameData from './data/gameData'
+import util from './util'
+
+let DATA = new databus()
+
+export const changeState = function(state) {
+    tips.showMask(() => {
+        DATA.state = state
+    })
+}
+
+export const next = function(callback) { //下一关
+    if (DATA.level_now == gameData.length - 1) {
+        tips.tip("已经是最后一关", () => {
+            
+        })
+    } else {
+        DATA.state = ""
+        changeLevel(DATA.level_now + 1, callback)
+    }
+}
+
+export const changeLevel = function(level, callback) { //切换关卡
+    DATA.level_now = level
+    let levelNumContainer = new easeljs.Container()
+    let levelNum_bg = new easeljs.Shape() //关数背景圆
+    levelNum_bg.graphics.f("#000").a(DATA.window_w / 2, DATA.window_h / 2, 80, 0, 2*Math.PI)
+    let levelNum = new easeljs.Text(DATA.level_now + 1, "50px Arial", "#fff")
+    levelNum.x = DATA.window_w / 2
+    levelNum.y = DATA.window_h / 2
+    levelNum.textAlign = "center"
+    levelNum.textBaseline = "middle"
+    levelNumContainer.addChild(levelNum_bg, levelNum)
+    tips.tip(levelNumContainer, () => {
+        DATA.state = "playing"
+        DATA.gameData.items = [...gameData[DATA.level_now].items]
+        DATA.gameData.answers = util.computeAnswer(gameData[DATA.level_now])
+        callback&&callback()
+    })
+}

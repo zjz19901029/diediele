@@ -1,11 +1,10 @@
 
 import databus from '../databus'
 import drawShapes from './drawShapes'
-import drawLevelChange from './drawLevelChange'
-import easeljs from '../libs/easeljs'
+import easeljs from '../libs/easeljs.min'
 import drawPlayerArea from './playerDrawArea'
 import judge from '../judge/judge'
-
+import {next} from '../statebus'
 
 let DATA = new databus()
 
@@ -17,24 +16,23 @@ let gameData = DATA.gameData
 let gameArea = DATA.gameArea
 let bgArea = new easeljs.Container()
 let answerArea = new easeljs.Container()
-bgArea.compositeOperation = ""
 answerArea.x = DATA.answerCanvasOffset.left
 answerArea.y = DATA.answerCanvasOffset.top
-answerArea.compositeOperation = "xor"
+//answerArea.compositeOperation = "xor"
 
 function drawCanvasBg() { //绘制画布基础背景方格
     let s = new easeljs.Shape()
     s.graphics.s("#666").rect(playerCanvasOffset.left, playerCanvasOffset.top, playerCanvasHeight, playerCanvasHeight)
     bgArea.addChild(s)
-    // for (let i = 1; i < DATA.grid_x; i++) {
-    //     for (let j = 1; j < DATA.grid_y; j++) {
-    //         let x = i * DATA.grid_w
-    //         let y = j * DATA.grid_w
-    //         s = new easeljs.Shape()
-    //         s.graphics.f("#ccc").arc(x + playerCanvasOffset.left, y + playerCanvasOffset.top, DATA.grid_r, 0, 2*Math.PI)
-    //         bgArea.addChild(s)
-    //     }
-    // }
+    for (let i = 1; i < DATA.grid_x; i++) {
+        for (let j = 1; j < DATA.grid_y; j++) {
+            let x = i * DATA.grid_w
+            let y = j * DATA.grid_w
+            s = new easeljs.Shape()
+            s.graphics.f("#ccc").arc(x + playerCanvasOffset.left, y + playerCanvasOffset.top, DATA.grid_r, 0, 2*Math.PI)
+            bgArea.addChild(s)
+        }
+    }
     gameArea.addChild(bgArea)
 }
 
@@ -75,7 +73,11 @@ function drawPlayerShapes() { //绘制用户的图形
     let playerStage = new drawPlayerArea(shapes, function(data) {
         if (judge.judgeSuccess(data, gameData.answers)) { //过关
             console.log("success")
-            DATA.next()
+            next(() => {
+                answerArea.removeAllChildren()
+                playerStage.removeAllChildren()
+                draw()
+            })
         }
     }).stage
     playerStage.x = DATA.playerCanvasOffset.left
@@ -90,13 +92,7 @@ function draw() {
     drawCanvasBg()
     drawAnswer()
     drawPlayerShapes()
-    
-    //drawLevelChange(ctx_game_bg)
-    // DATA.stage.removeChild(canvas_game_bg_img)
-    // canvas_game_bg_img = new easeljs.Bitmap(canvas_game_bg)
     DATA.stage.update()
-    //window.requestAnimationFrame(draw)
-    //easeljs.Ticker.addEventListener("tick")
 }
 
 module.exports = draw

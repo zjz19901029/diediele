@@ -1,16 +1,11 @@
-import databus from '../databus'
-import easeljs from '../libs/easeljs'
+import easeljs from '../libs/easeljs.min'
 import playEvent from '../event/playEvent'
 import drawShapes from './drawShapes'
 
-let DATA = new databus()
 
 export default class playerDrawArea { //生成用户操作的区域
     constructor(data, onChangeCb) {
-        let playerDrawCanvas = wx.createCanvas()
-        this.stage = new easeljs.Stage(playerDrawCanvas)
-        this.stage.compositeOperation = "xor"
-        easeljs.Touch.enable(this.stage)
+        this.stage = new easeljs.Container()
         this.data = data
         this.init(onChangeCb)
     }

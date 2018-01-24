@@ -1,8 +1,7 @@
 import gameData from './data/gameData'
 import config from './config'
-import tips from './tips/tips'
-import tweenjs from './libs/tweenjs.min'
-import easeljs from './libs/easeljs'
+import util from './util'
+import easeljs from './libs/easeljs.min'
 
 let instance
 
@@ -15,21 +14,25 @@ export default class DataBus {
 		return instance
 
 		instance = this
-		this.stage = new easeljs.Stage(canvas)
+		
+		this.stage = new easeljs.Stage(canvas) //主舞台
 		easeljs.Touch.enable(this.stage)
 		easeljs.Ticker.timingMode = easeljs.Ticker.RAF
 
-		this.gameArea = new easeljs.Container()
-		this.menuArea = new easeljs.Container()
-		this.createArea = new easeljs.Container()
-		let mask = new easeljs.Shape()
-		mask.graphics.f("#fff").r(0, 0, this.window_w, this.window_h)
-		this.stage.addChildAt(this.gameArea, this.menuArea, this.createArea, mask)
+		this.gameArea = new easeljs.Container() //游戏舞台
+		this.menuArea = new easeljs.Container()	//菜单舞台
+		this.createArea = new easeljs.Container() //出题舞台
+		this.maskArea = new easeljs.Container() //遮罩层
+		let g = new easeljs.Graphics().f("#fff").r(0, 0, canvas.width, canvas.height)
+		let mask = new easeljs.Shape(g) //遮罩层
+		let bg = new easeljs.Shape(g) //底色
+		this.maskArea.addChild(mask)
+		this.stage.addChild(bg, this.gameArea, this.menuArea, this.createArea, this.maskArea)
 		this.tweenParams = {
 			maskOpacity: 0
 		}
 		easeljs.Ticker.addEventListener("tick",() => {
-			mask.alpha = this.tweenParams.maskOpacity
+			this.maskArea.alpha = this.tweenParams.maskOpacity
 			this.stage.update()
 		})
 
@@ -66,97 +69,9 @@ export default class DataBus {
 		this.ctx_bg = canvas.getContext('2d')
 		
 		this.gameData = {
-			items: gameData[this.level_now].items,
-			answers: this.computeAnswer(gameData[this.level_now])
+			items: [...gameData[this.level_now].items],
+			answers: util.computeAnswer(gameData[this.level_now])
 		}
 
-	}
-
-	changeState(state) {
-		this.showMask(() => {
-			this.state = state
-		})
-	}
-
-	showMask(callback) {
-		tweenjs.Tween.get(this.tweenParams).to({maskOpacity: 1}, 1).call(callback).wait(1).to({maskOpacity: 0}, 1)
-	}
-
-	next() { //下一关
-		if (this.level_now == gameData.length - 1) {
-			tips.alert("已经是最后一关")
-		} else {
-			this.state = ""
-			this.changeLevel()
-		}
-	}
-
-	changeLevel() { //切换关卡
-		this.level_now++
-		this.showMask(() => {
-			this.gameData.items = gameData[this.level_now].items
-			this.gameData.answers = this.computeAnswer(gameData[this.level_now])
-		})
-	}
-
-	computeAnswer(data) { //计算答案的所有摆放形式，因为会有相同的图形，所以存在多种摆放形式
-		let items = data.items
-		let answer = data.answer.split("|")
-		let sameRecord = this.findSameRecord(items)
-		let newAnswer = this.changeLocation(answer, sameRecord)
-		let answers = []
-		for (let i = 0; i < newAnswer.length; i++) {
-			answers.push(newAnswer[i].join("|"))
-		}
-		return answers
-	}
-
-	findSameRecord(items) { //找出相同的图形生成数组,[[0,1],[2,3,4]]
-		let repeatRecord = {} //用来记录已经计算过的重复项
-		let computeRecord = [] //记录需要计算的重复项
-		for (let i = 0; i < items.length; i++) { //遍历所有图形，并且没有被计算过
-			if (repeatRecord[i]) {
-				continue
-			}
-			let temp = [i]
-			for (let j = 1; j < items.length; j++) {
-				if (repeatRecord[j] || j == i) {
-					continue
-				}
-				if (this.isSame(items[i], items[j])) { //2个图形相同
-					temp.push(j) //记录相同的图形
-					repeatRecord[j] = true //标识改图形已被选取，不需要再遍历
-					repeatRecord[i] = true //标识改图形已被选取，不需要再遍历
-				}
-			}
-			if (temp.length > 1) { //有2个以上相同的图形
-				computeRecord.push(temp)
-			}
-		}
-		return computeRecord
-	}
-
-	changeLocation(answer, sameRecord) { //根据找出的相同图形数据，进行位置替换，生成所有可能的答案分布
-		let answers = [answer]
-		for (let i = 0; i < sameRecord.length; i++) {
-			let newAnswer = []
-			for (let k = 0; k < answers.length; k++) { //在之前已得到的答案基础上，进行全排列
-				for (let m = 0; m < sameRecord[i].length; m++) {
-					for (let n = m + 1; n < sameRecord[i].length; n++) { //将相同图形进行全排列，生成对应的图形坐标数据
-						let nowAnswer = [...answers[k]] //使用析构，防止更改到原始数据
-						let temp = nowAnswer[sameRecord[i][m]]
-						nowAnswer[sameRecord[i][m]] = nowAnswer[sameRecord[i][n]]
-						nowAnswer[sameRecord[i][n]] = temp
-						newAnswer.push(nowAnswer)
-					}
-				}
-			}
-			answers = answers.concat(newAnswer)
-		}
-		return answers
-	}
-
-	isSame(item1, item2) { //判断2个图形是否完全一致
-		return (item1.width == item2.width && item1.height == item2.height && item1.shape == item2.shape && item1.direction == item2.direction)
 	}
 }
