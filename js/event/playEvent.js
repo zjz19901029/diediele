@@ -45,7 +45,6 @@ function bindTouchEvent(shapes, drawArea, onMove, onChange) { //绑定触摸事�
         startX = e.stageX
         startY = e.stageY
         onMove&&onMove()
-        DATA.stage.update()
     })
 
     upListener = DATA.stage.on("pressup", (e) => {

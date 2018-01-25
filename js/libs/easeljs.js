@@ -8414,12 +8414,12 @@ createjs.deprecate = function(fallbackMethod, name) {
 	 * @param {HTMLElement} e
 	 **/
 	p._getElementRect = function(e) {
-		if (window.wx && window.canvas) { //微信小游戏
+		if (wx && canvas) { //微信小游戏
 			return {
 				left: 0,
-				right: window.canvas.width,
+				right: canvas.width,
 				top: 0,
-				bottom: window.canvas.height
+				bottom: canvas.height
 			}
 		}
 		var bounds;
@@ -16381,7 +16381,7 @@ createjs.deprecate = function(fallbackMethod, name) {
 	 **/
 	Touch.isSupported = function() {
 		return	!!(('ontouchstart' in window) // iOS & Android
-			|| (window.wx && window.wx.onTouchStart) // 微信小游戏
+			|| (wx && wx.onTouchStart) // 微信小游戏
 			|| (window.navigator['msPointerEnabled'] && window.navigator['msMaxTouchPoints'] > 0) // IE10
 			|| (window.navigator['pointerEnabled'] && window.navigator['maxTouchPoints'] > 0)); // IE11+
 	};
@@ -16409,7 +16409,7 @@ createjs.deprecate = function(fallbackMethod, name) {
 
 		// note that in the future we may need to disable the standard mouse event model before adding
 		// these to prevent duplicate calls. It doesn't seem to be an issue with iOS devices though.
-		if ('ontouchstart' in window || (window.wx && window.wx.onTouchStart)) { Touch._IOS_enable(stage); }
+		if ('ontouchstart' in window || (wx && wx.onTouchStart)) { Touch._IOS_enable(stage); }
 		else if (window.navigator['msPointerEnabled'] || window.navigator["pointerEnabled"]) { Touch._IE_enable(stage); }
 		return true;
 	};
@@ -16422,7 +16422,7 @@ createjs.deprecate = function(fallbackMethod, name) {
 	 **/
 	Touch.disable = function(stage) {
 		if (!stage) { return; }
-		if ('ontouchstart' in window || (window.wx && window.wx.onTouchStart)) { Touch._IOS_disable(stage); }
+		if ('ontouchstart' in window || (wx && wx.onTouchStart)) { Touch._IOS_disable(stage); }
 		else if (window.navigator['msPointerEnabled'] || window.navigator["pointerEnabled"]) { Touch._IE_disable(stage); }
 		
 		delete stage.__touch;
@@ -16439,7 +16439,7 @@ createjs.deprecate = function(fallbackMethod, name) {
 	Touch._IOS_enable = function(stage) {
 		var canvas = stage.canvas;
 		var f = stage.__touch.f = function(e) { Touch._IOS_handleEvent(stage,e); };
-		if (window.wx && window.wx.onTouchStart) { //微信小游戏
+		if (wx && wx.onTouchStart) { //微信小游戏
 			wx.onTouchStart(f)
 			wx.onTouchMove(f)
 			wx.onTouchEnd(f)
@@ -16482,12 +16482,13 @@ createjs.deprecate = function(fallbackMethod, name) {
 		for (var i= 0,l=touches.length; i<l; i++) {
 			var touch = touches[i];
 			var id = touch.identifier;
-			if (touch.target != stage.canvas) { continue; }
-			if (type == "touchstart") {
+			if (wx && wx.onTouchStart) {console.log(type)} //微信小游戏中无需判断事件对象
+			else if (touch.target != stage.canvas) { continue; } 
+			if (type == "touchstart" || type == "ontouchstart") { //微信小游戏触发的事件类型ontouchstart
 				this._handleStart(stage, id, e, touch.pageX, touch.pageY);
-			} else if (type == "touchmove") {
+			} else if (type == "touchmove" || type == "ontouchmove") {
 				this._handleMove(stage, id, e, touch.pageX, touch.pageY);
-			} else if (type == "touchend" || type == "touchcancel") {
+			} else if (type == "touchend" || type == "touchcancel" || type == "ontouchend") {
 				this._handleEnd(stage, id, e);
 			}
 		}

@@ -4,11 +4,14 @@ import easeljs from '../libs/easeljs.min'
 
 let DATA = new databus()
 
+let scale = 1
+
 //绘制当前的图形, 因为小游戏中只有一个canvas的原因，直接使用XOR模式绘制，会导致背景和游戏图片重叠，所以这里在离屏canvas上绘制出图形，然后生成图片绘制到主舞台
 function drawShapes(shapes, drawArea, addEvent, onChangeCb) { 
     let cloneCanvas = wx.createCanvas()
     let cloneStage = new easeljs.Stage(cloneCanvas) //绘制图形
     cloneStage.compositeOperation = "xor"
+    cloneStage.scaleY = cloneStage.scaleY = 1/scale
     let image
     for (let i = 0; i < shapes.length; i++) {
         let shape
@@ -28,6 +31,7 @@ function drawShapes(shapes, drawArea, addEvent, onChangeCb) {
         image = new easeljs.Bitmap(cloneCanvas)
         image.mouseEnabled = false
         drawArea.addChild(image)
+        DATA.stage.update()
     }, onChangeCb)
     cloneStage.update()
     image = new easeljs.Bitmap(cloneCanvas)
@@ -50,11 +54,10 @@ function drawTriangle(itemdata, drawArea) { //绘制三角形
    // let s = new easeljs.Bitmap("images/triangle.png")
     let s = new easeljs.Shape()
     s.localData = itemdata
-    let position = util.getTrianglePosition(itemdata, DATA.grid_w)
+    let position = util.getTrianglePosition(itemdata, DATA.grid_w * scale)
     s.graphics.f("#000").mt(position.x1, position.y1).lt(position.x2, position.y2).lt(position.x3, position.y3)
-    s.x = itemdata.x * DATA.grid_w
-    s.y = itemdata.y * DATA.grid_w
-    s.setBounds(s.x, s.y, 200, 200)
+    s.x = itemdata.x * DATA.grid_w * scale
+    s.y = itemdata.y * DATA.grid_w * scale
     //s.setTransform(itemdata.x * DATA.grid_w, itemdata.y * DATA.grid_w, itemdata.width * DATA.grid_w / 297, itemdata.height * DATA.grid_w / 297)
     return s
 }

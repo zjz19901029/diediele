@@ -31,7 +31,11 @@ export default class DataBus {
 		this.tweenParams = {
 			maskOpacity: 0
 		}
+		this.maskArea.alpha = this.tweenParams.maskOpacity
 		easeljs.Ticker.addEventListener("tick",() => {
+			if (this.maskArea.alpha == 0 && this.maskArea.alpha == 0) {
+				return
+			}
 			this.maskArea.alpha = this.tweenParams.maskOpacity
 			this.stage.update()
 		})
