@@ -14,27 +14,7 @@ let playerCanvasHeight = DATA.playerCanvasHeight
 let gameData = DATA.gameData
 
 let gameArea = DATA.gameArea
-let bgArea = new easeljs.Container()
-let answerArea = new easeljs.Container()
-answerArea.x = DATA.answerCanvasOffset.left
-answerArea.y = DATA.answerCanvasOffset.top
-//answerArea.compositeOperation = "xor"
 
-function drawCanvasBg() { //绘制画布基础背景方格
-    let s = new easeljs.Shape()
-    s.graphics.s("#666").rect(playerCanvasOffset.left, playerCanvasOffset.top, playerCanvasHeight, playerCanvasHeight)
-    bgArea.addChild(s)
-    for (let i = 1; i < DATA.grid_x; i++) {
-        for (let j = 1; j < DATA.grid_y; j++) {
-            let x = i * DATA.grid_w
-            let y = j * DATA.grid_w
-            s = new easeljs.Shape()
-            s.graphics.f("#ccc").arc(x + playerCanvasOffset.left, y + playerCanvasOffset.top, DATA.grid_r, 0, 2*Math.PI)
-            bgArea.addChild(s)
-        }
-    }
-    gameArea.addChild(bgArea)
-}
 
 function drawAnswer() { //绘制答案图形
     let answer = gameData.answers[0].split("|")
@@ -64,32 +44,31 @@ function drawAnswer() { //绘制答案图形
         shape.x += minusX
         shape.y += minusY
     })
-    drawShapes(shapes, answerArea)
+    let answerArea = new easeljs.Bitmap(drawShapes(shapes))
+    answerArea.x = DATA.answerCanvasOffset.left
+    answerArea.y = DATA.answerCanvasOffset.top
     gameArea.addChild(answerArea)
 }
 
 function drawPlayerShapes() { //绘制用户的图形
     let shapes = gameData.items
-    let playerStage = new drawPlayerArea(shapes, function(data) {
+    let playerStage = new drawPlayerArea(shapes, DATA.playerCanvasOffset.left, DATA.playerCanvasOffset.top, playerCanvasWidth, playerCanvasHeight, function(data) {
         if (judge.judgeSuccess(data, gameData.answers)) { //过关
+            playerStage.stop()
             console.log("success")
             next(() => {
-                answerArea.removeAllChildren()
-                playerStage.removeAllChildren()
+                gameArea.removeAllChildren()
+            }, () => {
                 draw()
             })
         }
-    }).stage
-    playerStage.x = DATA.playerCanvasOffset.left
-    playerStage.y = DATA.playerCanvasOffset.top
-    gameArea.addChild(playerStage)
+    })
 }
 
 function draw() {
     if (DATA.state != "playing") {
         return
     }
-    drawCanvasBg()
     drawAnswer()
     drawPlayerShapes()
     DATA.stage.update()

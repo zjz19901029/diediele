@@ -12,18 +12,18 @@ export const changeState = function(state) {
     })
 }
 
-export const next = function(callback) { //下一关
+export const next = function(callback, complete) { //下一关
     if (DATA.level_now == gameData.length - 1) {
         tips.tip("已经是最后一关", () => {
             
         })
     } else {
         DATA.state = ""
-        changeLevel(DATA.level_now + 1, callback)
+        changeLevel(DATA.level_now + 1, callback, complete)
     }
 }
 
-export const changeLevel = function(level, callback) { //切换关卡
+export const changeLevel = function(level, callback, complete) { //切换关卡
     DATA.level_now = level
     let levelNumContainer = new easeljs.Container()
     let levelNum_bg = new easeljs.Shape() //关数背景圆
@@ -39,5 +39,7 @@ export const changeLevel = function(level, callback) { //切换关卡
         DATA.gameData.items = [...gameData[DATA.level_now].items]
         DATA.gameData.answers = util.computeAnswer(gameData[DATA.level_now])
         callback&&callback()
+    }, () => {
+        complete&&complete()
     })
 }

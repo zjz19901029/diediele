@@ -28,12 +28,13 @@ export default class DataBus {
 		let bg = new easeljs.Shape(g) //底色
 		this.maskArea.addChild(mask)
 		this.stage.addChild(bg, this.gameArea, this.menuArea, this.createArea, this.maskArea)
+		this.stage.update()
 		this.tweenParams = {
 			maskOpacity: 0
 		}
 		this.maskArea.alpha = this.tweenParams.maskOpacity
 		easeljs.Ticker.addEventListener("tick",() => {
-			if (this.maskArea.alpha == 0 && this.maskArea.alpha == 0) {
+			if (this.maskArea.alpha == 0 && this.tweenParams.maskOpacity == 0) {
 				return
 			}
 			this.maskArea.alpha = this.tweenParams.maskOpacity

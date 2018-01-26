@@ -18,7 +18,7 @@ function alert(txt) {
     })
 }
 
-function tip(txt, callback) {
+function tip(txt, callback, complete) {
     let child
     if (typeof txt == "string") {
         child = new easeljs.Text(txt, "20px Arial", "#000")
@@ -34,6 +34,7 @@ function tip(txt, callback) {
         callback&&callback()
     }, () => {
         DATA.maskArea.removeChild(child)
+        complete&&complete()
     })
 }
 

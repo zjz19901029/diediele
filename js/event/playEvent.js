@@ -7,7 +7,7 @@ let startX, startY
 let targetItem // 拖动的目标图形
 let moveListener, upListener, startListener // 记录监听事件
 
-function bindTouchEvent(shapes, drawArea, onMove, onChange) { //绑定触摸事件监听
+function bindTouchEvent(shapes, x, y, onMove, onChange) { //绑定触摸事件监听
     moveListener && DATA.stage.off("pressmove", moveListener)
     upListener && DATA.stage.off("pressup", upListener)
     startListener && DATA.stage.off("mousedown", startListener)
@@ -27,7 +27,7 @@ function bindTouchEvent(shapes, drawArea, onMove, onChange) { //绑定触摸事�
         startX = e.stageX
         startY = e.stageY
         for (let i = 0; i < shapes.length; i++) {
-            if (judge.judgeItem(shapes[i], startX - drawArea.x, startY - drawArea.y)) { //判断是否按住某个图形
+            if (judge.judgeItem(shapes[i], startX - x, startY - y)) { //判断是否按住某个图形
                 targetItem = shapes[i]
                 break
             }
@@ -38,10 +38,8 @@ function bindTouchEvent(shapes, drawArea, onMove, onChange) { //绑定触摸事�
         if (!targetItem || DATA.state != "playing") { //当前禁止操作
             return false
         }
-        targetItem.x += (e.stageX - startX)
-        targetItem.y += (e.stageY - startY)
-        targetItem.localData.x += (e.stageX - startX) / DATA.grid_w
-        targetItem.localData.y += (e.stageY - startY) / DATA.grid_w
+        targetItem.x += (e.stageX - startX) / DATA.grid_w
+        targetItem.y += (e.stageY - startY) / DATA.grid_w
         startX = e.stageX
         startY = e.stageY
         onMove&&onMove()
