@@ -1,4 +1,5 @@
 
+import easeljs from './libs/easeljs.min'
 let util = {
     getTrianglePosition(shapeData, grid_w, x = 0, y = 0) { //根据图形数据获取三角形的3个点坐标, X,Y值代表图形的位移，不然计算出来的坐标是以0，0为基础的坐标
         if (shapeData.shape != "triangle") {
@@ -74,7 +75,7 @@ let util = {
         return {x1 : x1 + x, y1 : y1 + y, x2 : x2 + x, y2 : y2 + y, x3: x3 + x, y3: y3 + y}
     },
     computeAnswer(data) { //计算答案的所有摆放形式，因为会有相同的图形，所以存在多种摆放形式
-		let items = data.items
+		let items = [...data.items]
 		let answer = data.answer.split("|")
 		let sameRecord = util.findSameRecord(items)
 		let newAnswer = util.changeLocation(answer, sameRecord)
@@ -83,7 +84,21 @@ let util = {
 			answers.push(newAnswer[i].join("|"))
 		}
 		return answers
-	},
+    },
+    computeShapesLocation(data) { //计算初始图形的摆放位置
+        let items = [...data]
+        let x = 1, y = 2
+        for (let i = 0; i < items.length; i++) {
+            if (i % 3 == 0) {
+                x = 1
+            } else {
+                x += 5
+            }
+            items[i].x = x
+            items[i].y = Math.floor(i / 3) * (y + 4) + y
+        }
+        return items
+    },
 
 	findSameRecord(items) { //找出相同的图形生成数组,[[0,1],[2,3,4]]
 		let repeatRecord = {} //用来记录已经计算过的重复项
@@ -132,6 +147,20 @@ let util = {
 
 	isSame(item1, item2) { //判断2个图形是否完全一致
 		return (item1.width == item2.width && item1.height == item2.height && item1.shape == item2.shape && item1.direction == item2.direction)
-	}
+    },
+    
+    drawButton(txt, width = 100, height = 40, fontSize = 20) { //绘制button
+        let button = new easeljs.Container()
+        let button_bg = new easeljs.Shape()
+        button_bg.graphics.f("#fff").s("#000").r(0, 0, width, height)
+        let text = new easeljs.Text(txt, fontSize + "px Arial", "#000")
+        text.x = width / 2
+        text.y = height / 2
+        text.textAlign = "center"
+        text.textBaseline = "middle"
+        text.mouseEnabled = false
+        button.addChild(button_bg, text)
+        return button
+    }
 }
 export default util

@@ -4,7 +4,7 @@ import drawShapes from './drawShapes'
 import easeljs from '../libs/easeljs.min'
 import drawPlayerArea from './playerDrawArea'
 import judge from '../judge/judge'
-import {next} from '../statebus'
+import {next, changeState} from '../statebus'
 
 let DATA = new databus()
 
@@ -15,8 +15,24 @@ let gameData = DATA.gameData
 
 let gameArea = DATA.gameArea
 
+let playerStage
 
-function drawAnswer() { //绘制答案图形
+function drawMenuButton() { //绘制菜单按钮
+    let button = new easeljs.Shape()
+    button.graphics.s("#000").arc(25, 25, 25, 0, 2*Math.PI)
+    button.graphics.f("#000").arc(25, 25, 15, 0, 2*Math.PI)
+    button.x = 20
+    button.y = 20
+    button.on("click", () => {
+        playerStage.stop()
+        changeState("menu", () => {
+            gameArea.removeAllChildren()
+        })
+    })
+    gameArea.addChild(button)
+}
+
+function drawAnswer() { //绘制答案图形，使答案居中
     let answer = gameData.answers[0].split("|")
     let shapes = []
     let minX, minY, maxX
@@ -52,7 +68,7 @@ function drawAnswer() { //绘制答案图形
 
 function drawPlayerShapes() { //绘制用户的图形
     let shapes = gameData.items
-    let playerStage = new drawPlayerArea(shapes, DATA.playerCanvasOffset.left, DATA.playerCanvasOffset.top, playerCanvasWidth, playerCanvasHeight, function(data) {
+    playerStage = new drawPlayerArea(shapes, DATA.playerCanvasOffset.left, DATA.playerCanvasOffset.top, playerCanvasWidth, playerCanvasHeight, function(data) {
         if (judge.judgeSuccess(data, gameData.answers)) { //过关
             playerStage.stop()
             console.log("success")
@@ -69,6 +85,7 @@ function draw() {
     if (DATA.state != "playing") {
         return
     }
+    drawMenuButton()
     drawAnswer()
     drawPlayerShapes()
     DATA.stage.update()

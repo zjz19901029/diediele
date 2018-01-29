@@ -45,7 +45,7 @@ export default class DataBus {
 	}
 
 	init() {
-		this.state = "playing" //当前游戏状态
+		this.state = "create" //当前游戏状态
 		this.level_now = 0
 		this.window_w = canvas.width
 		this.window_h = canvas.height
@@ -74,7 +74,7 @@ export default class DataBus {
 		this.ctx_bg = canvas.getContext('2d')
 		
 		this.gameData = {
-			items: [...gameData[this.level_now].items],
+			items: util.computeShapesLocation(gameData[this.level_now].items),
 			answers: util.computeAnswer(gameData[this.level_now])
 		}
 

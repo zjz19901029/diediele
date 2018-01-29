@@ -4,11 +4,12 @@ import util from '../util'
 let DATA = new databus()
 
 let scale = 1
+let cloneCanvas = wx.createCanvas()
 
 //绘制当前的图形, 因为小游戏中只有一个canvas的原因，直接使用XOR模式绘制，会导致背景和游戏图片重叠，所以这里在离屏canvas上绘制出图形，然后生成图片绘制到主舞台
 function drawShapes(shapes) { 
-    let cloneCanvas = wx.createCanvas()
     let ctx = cloneCanvas.getContext("2d")
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.globalCompositeOperation = "xor"
     draw(shapes, ctx)
     return cloneCanvas

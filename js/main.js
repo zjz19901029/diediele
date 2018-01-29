@@ -1,15 +1,19 @@
 import databus from './databus'
 import draw from './runtime/draw'
+import menu from './runtime/menu'
+import createMission from './runtime/createMission'
 import bindEvent from './event/event'
 import Bmob from './libs/bmob.js'
+import {register} from './statebus'
 
+let DATA = new databus()
 
 function init() { //初始化
     wx.login({
         success: function () {
           wx.getUserInfo({
             success: function (res) {
-              console.log(res)
+              DATA.userInfo = res
             }
           })
         }
@@ -28,8 +32,22 @@ function init() { //初始化
         console.log("查询失败");
       }
     });
-    draw()
+    register(stateChanged)
     bindEvent()
+}
+
+function stateChanged(state) {
+  switch (state) {
+    case "playing":
+      draw()
+      break
+    case "menu":
+      menu()
+      break
+    case "create":
+      createMission()
+      break
+  }
 }
 
 export default init

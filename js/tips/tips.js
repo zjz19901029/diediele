@@ -38,7 +38,7 @@ function tip(txt, callback, complete) {
     })
 }
 
-function showMask(callback, complete) {
+function showMask(callback = function(){}, complete = function(){}) {
     tweenjs.Tween.get(DATA.tweenParams).to({maskOpacity: 1}, 1).call(callback).wait(1).to({maskOpacity: 0}, 1).call(complete)
 }
 

@@ -5,10 +5,18 @@ import gameData from './data/gameData'
 import util from './util'
 
 let DATA = new databus()
+let stateChanged = function() {}
 
-export const changeState = function(state) {
+export const register = function(callback) { //注册状态切换事件
+    stateChanged = callback
+    callback(DATA.state)
+}
+
+export const changeState = function(state, callback) { //切换状态
     tips.showMask(() => {
-        DATA.state = state
+        DATA.state = "playing"
+        callback&&callback()
+        stateChanged(state)
     })
 }
 
@@ -36,10 +44,11 @@ export const changeLevel = function(level, callback, complete) { //切换关卡
     levelNumContainer.addChild(levelNum_bg, levelNum)
     tips.tip(levelNumContainer, () => {
         DATA.state = "playing"
-        DATA.gameData.items = [...gameData[DATA.level_now].items]
+        DATA.gameData.items = util.computeShapesLocation(gameData[DATA.level_now].items)
         DATA.gameData.answers = util.computeAnswer(gameData[DATA.level_now])
         callback&&callback()
     }, () => {
         complete&&complete()
     })
 }
+

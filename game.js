@@ -4,5 +4,5 @@ import loadfile from './js/preload/preload'
 
 loadfile([
     'images/cube.jpg',
-    'images/triangle.png'
+    'images/menu_btn.png'
 ], init)
