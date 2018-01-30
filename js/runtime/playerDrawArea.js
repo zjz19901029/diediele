@@ -3,8 +3,6 @@ import playEvent from '../event/playEvent'
 import drawShapes from './drawShapes'
 import databus from '../databus'
 
-let DATA = new databus()
-
 
 export default class playerDrawArea { //生成用户操作的区域
     constructor(data, x, y, width, height, onChangeCb) {
@@ -32,6 +30,7 @@ export default class playerDrawArea { //生成用户操作的区域
     }
 
     drawBg() {
+        let DATA = new databus()
         let bgCanvas = wx.createCanvas()
         bgCanvas.width = this.width
         bgCanvas.height = this.height

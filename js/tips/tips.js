@@ -2,9 +2,8 @@ import easeljs from '../libs/easeljs.min'
 import tweenjs from '../libs/tweenjs.min'
 import databus from '../databus'
 
-let DATA = new databus()
-
 function alert(txt) {
+    let DATA = new databus()
     let levelNum = new easeljs.Text(txt, "50px Arial", "#000")
     levelNum.x = this.window_w / 2
     levelNum.y = this.window_h / 2
@@ -19,6 +18,7 @@ function alert(txt) {
 }
 
 function tip(txt, callback, complete) {
+    let DATA = new databus()
     let child
     if (typeof txt == "string") {
         child = new easeljs.Text(txt, "20px Arial", "#000")
@@ -39,6 +39,7 @@ function tip(txt, callback, complete) {
 }
 
 function showMask(callback = function(){}, complete = function(){}) {
+    let DATA = new databus()
     tweenjs.Tween.get(DATA.tweenParams).to({maskOpacity: 1}, 1).call(callback).wait(1).to({maskOpacity: 0}, 1).call(complete)
 }
 

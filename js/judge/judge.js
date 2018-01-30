@@ -1,8 +1,6 @@
 import databus from '../databus'
 import util from '../util'
 
-let DATA = new databus()
-let gameData = DATA.gameData
 
 function judgeItem(shapeData, x, y) { //判断用户按在哪个图形上
     switch (shapeData.shape) {
@@ -16,6 +14,7 @@ function judgeItem(shapeData, x, y) { //判断用户按在哪个图形上
 }
 
 function judgeCube(shapeData, x, y) { //判断是否在矩形内部
+    let DATA = new databus()
     if (x > shapeData.x * DATA.grid_w
         && x < shapeData.x * DATA.grid_w + shapeData.width * DATA.grid_w
         && y > shapeData.y * DATA.grid_w
@@ -26,6 +25,7 @@ function judgeCube(shapeData, x, y) { //判断是否在矩形内部
 }
 
 function judgeTriangle(shapeData, x0, y0) { //判断是否在三角形内部
+    let DATA = new databus()
     let position = util.getTrianglePosition(shapeData, DATA.grid_w, shapeData.x * DATA.grid_w, shapeData.y * DATA.grid_w)//传入平移坐标
     let divisor = (position.y2 - position.y3)*(position.x1 - position.x3) + (position.x3 - position.x2)*(position.y1 - position.y3)
     let a = ((position.y2 - position.y3)*(x0 - position.x3) + (position.x3 - position.x2)*(y0 - position.y3)) / divisor
@@ -36,6 +36,7 @@ function judgeTriangle(shapeData, x0, y0) { //判断是否在三角形内部
   }
 
 function getItemStay(item) { //让图形按照栅格排版
+    let DATA = new databus()
     item.x = Math.round(item.x)
     item.y = Math.round(item.y)
     
@@ -49,7 +50,6 @@ function getItemStay(item) { //让图形按照栅格排版
     } else if (item.y < 0) {
         item.y = 0
     }
-    DATA.stage.update()
 }
 
 function judgeSuccess(items, answers) { //判断是否通关

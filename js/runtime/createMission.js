@@ -6,18 +6,21 @@ import baseShape from '../data/baseShape'
 import util from '../util'
 import Bmob from '../libs/bmob.js'
 
-let DATA = new databus()
-let createArea = DATA.createArea
-let playerOffset = {
-    left: DATA.playerCanvasOffset.left,
-    top: DATA.playerCanvasOffset.top - 30
-}
+let DATA
+let createArea
+let playerOffset
 let gameData = []
 let playerStage
 let tips
 let loading = false
 
 function createMission() {
+    DATA = new databus()
+    playerOffset = {
+        left: DATA.playerCanvasOffset.left,
+        top: DATA.playerCanvasOffset.top - 30
+    }
+    createArea = DATA.createArea
     drawMenuButton()
     drawSelectArea()
     drawPlayerShapes()

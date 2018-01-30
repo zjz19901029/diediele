@@ -1,8 +1,6 @@
 import databus from '../databus'
 import util from '../util'
 
-let DATA = new databus()
-
 let scale = 1
 let cloneCanvas = wx.createCanvas()
 
@@ -31,6 +29,7 @@ function draw(shapes, ctx) {
 }
 
 function drawCube(itemdata, ctx) { //绘制矩形
+    let DATA = new databus()
     ctx.fillStyle = "#000"
     ctx.beginPath()
     ctx.rect(itemdata.x * DATA.grid_w, itemdata.y * DATA.grid_w, itemdata.width * DATA.grid_w, itemdata.height * DATA.grid_w)
@@ -39,6 +38,7 @@ function drawCube(itemdata, ctx) { //绘制矩形
 }
 
 function drawTriangle(itemdata, ctx) { //绘制三角形
+    let DATA = new databus()
     let position = util.getTrianglePosition(itemdata, DATA.grid_w, itemdata.x * DATA.grid_w, itemdata.y * DATA.grid_w)
     ctx.fillStyle = "#000"
     ctx.beginPath()

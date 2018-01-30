@@ -3,10 +3,8 @@ import easeljs from '../libs/easeljs.min'
 import util from '../util'
 import {changeState} from '../statebus'
 
-let DATA = new databus()
-let menuArea = DATA.menuArea
-
 function menu() {
+    let DATA = new databus()
     drawMissions()
     createAnswerButton()
     DATA.stage.update()
@@ -17,6 +15,7 @@ function drawMissions() {
 }
 
 function createAnswerButton() {
+    let DATA = new databus()
     let button_w = 100
     let button_h = 40
     let y = 400
@@ -25,10 +24,10 @@ function createAnswerButton() {
     button.y = y
     button.on("click", () => {
         changeState("create", () => {
-            menuArea.removeAllChildren()
+            DATA.menuArea.removeAllChildren()
         })
     })
-    menuArea.addChild(button)
+    DATA.menuArea.addChild(button)
 }
 
 export default menu

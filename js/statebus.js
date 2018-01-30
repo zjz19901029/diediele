@@ -4,15 +4,16 @@ import tips from './tips/tips'
 import gameData from './data/gameData'
 import util from './util'
 
-let DATA = new databus()
 let stateChanged = function() {}
 
 export const register = function(callback) { //注册状态切换事件
+    let DATA = new databus()
     stateChanged = callback
     callback(DATA.state)
 }
 
 export const changeState = function(state, callback) { //切换状态
+    let DATA = new databus()
     tips.showMask(() => {
         DATA.state = "playing"
         callback&&callback()
@@ -21,6 +22,7 @@ export const changeState = function(state, callback) { //切换状态
 }
 
 export const next = function(callback, complete) { //下一关
+    let DATA = new databus()
     if (DATA.level_now == gameData.length - 1) {
         tips.tip("已经是最后一关", () => {
             
@@ -32,6 +34,7 @@ export const next = function(callback, complete) { //下一关
 }
 
 export const changeLevel = function(level, callback, complete) { //切换关卡
+    let DATA = new databus()
     DATA.level_now = level
     let levelNumContainer = new easeljs.Container()
     let levelNum_bg = new easeljs.Shape() //关数背景圆

@@ -45,7 +45,7 @@ export default class DataBus {
 	}
 
 	init() {
-		this.state = "create" //当前游戏状态
+		this.state = "playing" //当前游戏状态
 		this.level_now = 0
 		this.window_w = canvas.width
 		this.window_h = canvas.height

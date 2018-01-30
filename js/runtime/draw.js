@@ -6,16 +6,9 @@ import drawPlayerArea from './playerDrawArea'
 import judge from '../judge/judge'
 import {next, changeState} from '../statebus'
 
-let DATA = new databus()
-
-let playerCanvasOffset = DATA.playerCanvasOffset
-let playerCanvasWidth = DATA.playerCanvasWidth
-let playerCanvasHeight = DATA.playerCanvasHeight
-let gameData = DATA.gameData
-
-let gameArea = DATA.gameArea
-
 let playerStage
+let DATA
+let gameData
 
 function drawMenuButton() { //绘制菜单按钮
     let button = new easeljs.Shape()
@@ -26,10 +19,10 @@ function drawMenuButton() { //绘制菜单按钮
     button.on("click", () => {
         playerStage.stop()
         changeState("menu", () => {
-            gameArea.removeAllChildren()
+            DATA.gameArea.removeAllChildren()
         })
     })
-    gameArea.addChild(button)
+    DATA.gameArea.addChild(button)
 }
 
 function drawAnswer() { //绘制答案图形，使答案居中
@@ -63,17 +56,17 @@ function drawAnswer() { //绘制答案图形，使答案居中
     let answerArea = new easeljs.Bitmap(drawShapes(shapes))
     answerArea.x = DATA.answerCanvasOffset.left
     answerArea.y = DATA.answerCanvasOffset.top
-    gameArea.addChild(answerArea)
+    DATA.gameArea.addChild(answerArea)
 }
 
 function drawPlayerShapes() { //绘制用户的图形
-    let shapes = gameData.items
-    playerStage = new drawPlayerArea(shapes, DATA.playerCanvasOffset.left, DATA.playerCanvasOffset.top, playerCanvasWidth, playerCanvasHeight, function(data) {
-        if (judge.judgeSuccess(data, gameData.answers)) { //过关
+    let shapes = DATA.gameData.items
+    playerStage = new drawPlayerArea(shapes, DATA.playerCanvasOffset.left, DATA.playerCanvasOffset.top, DATA.playerCanvasWidth, DATA.playerCanvasHeight, function(data) {
+        if (judge.judgeSuccess(data, DATA.gameData.answers)) { //过关
             playerStage.stop()
             console.log("success")
             next(() => {
-                gameArea.removeAllChildren()
+                DATA.gameArea.removeAllChildren()
             }, () => {
                 draw()
             })
@@ -82,6 +75,8 @@ function drawPlayerShapes() { //绘制用户的图形
 }
 
 function draw() {
+    DATA = new databus()
+    gameData = DATA.gameData
     if (DATA.state != "playing") {
         return
     }

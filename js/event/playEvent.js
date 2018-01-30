@@ -1,13 +1,12 @@
 import judge from '../judge/judge'
 import databus from '../databus'
 
-let DATA = new databus()
-let gameData = DATA.gameData
 let startX, startY
 let targetItem // 拖动的目标图形
 let moveListener, upListener, startListener // 记录监听事件
 
 function bindTouchEvent(shapes, x, y, onMove, onChange) { //绑定触摸事件监听
+    let DATA = new databus()
     moveListener && DATA.stage.off("pressmove", moveListener)
     upListener && DATA.stage.off("pressup", upListener)
     startListener && DATA.stage.off("mousedown", startListener)
