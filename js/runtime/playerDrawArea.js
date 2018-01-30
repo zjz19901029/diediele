@@ -62,7 +62,6 @@ export default class playerDrawArea { //生成用户操作的区域
 
     setData(data) {
         this.data = data
-        console.log(this.data)
     }
 
     getData() {

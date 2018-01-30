@@ -1,4 +1,3 @@
-import gameData from './data/gameData'
 import config from './config'
 import util from './util'
 import easeljs from './libs/easeljs.min'
@@ -9,12 +8,13 @@ let instance
  * 全局状态管理器
  */
 export default class DataBus {
-  	constructor() {
+  	constructor(data) {
 		if ( instance )
 		return instance
 
 		instance = this
 		
+		this.data = data
 		this.stage = new easeljs.Stage(canvas) //主舞台
 		easeljs.Touch.enable(this.stage)
 		easeljs.Ticker.timingMode = easeljs.Ticker.RAF
@@ -74,8 +74,8 @@ export default class DataBus {
 		this.ctx_bg = canvas.getContext('2d')
 		
 		this.gameData = {
-			items: util.computeShapesLocation(gameData[this.level_now].items),
-			answers: util.computeAnswer(gameData[this.level_now])
+			items: util.computeShapesLocation(this.data[this.level_now].items),
+			answers: util.computeAnswer(this.data[this.level_now])
 		}
 
 	}

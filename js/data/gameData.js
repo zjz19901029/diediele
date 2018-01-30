@@ -1,4 +1,4 @@
-const data = [ //每关图形初始数据
+let data = [ //每关图形初始数据
     {
         items: [
             {

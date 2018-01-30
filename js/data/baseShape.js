@@ -75,37 +75,37 @@ const data = [
         "width": 2,
         "height": 2,
         "shape": "triangle",
-        "direction": "l-t"
+        "direction": "l-u"
     },
     {
         "width": 3,
         "height": 3,
         "shape": "triangle",
-        "direction": "l-t"
+        "direction": "l-u"
     },
     {
         "width": 4,
         "height": 4,
         "shape": "triangle",
-        "direction": "l-t"
+        "direction": "l-u"
     },
     {
         "width": 2,
         "height": 2,
         "shape": "triangle",
-        "direction": "r-t"
+        "direction": "r-u"
     },
     {
         "width": 3,
         "height": 3,
         "shape": "triangle",
-        "direction": "r-t"
+        "direction": "r-u"
     },
     {
         "width": 4,
         "height": 4,
         "shape": "triangle",
-        "direction": "r-t"
+        "direction": "r-u"
     },
     {
         "width": 2,
