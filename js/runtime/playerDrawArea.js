@@ -63,6 +63,10 @@ export default class playerDrawArea { //生成用户操作的区域
         this.data = data
     }
 
+    clearData() {
+        this.data.length = 0
+    }
+
     getData() {
         return this.data
     }

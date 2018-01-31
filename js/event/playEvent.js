@@ -25,6 +25,7 @@ function bindTouchEvent(shapes, x, y, onMove, onChange) { //绑定触摸事件�
         }
         startX = e.stageX
         startY = e.stageY
+        console.log(shapes)
         for (let i = 0; i < shapes.length; i++) {
             if (judge.judgeItem(shapes[i], startX - x, startY - y)) { //判断是否按住某个图形
                 targetItem = shapes[i]

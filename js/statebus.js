@@ -1,7 +1,6 @@
 import databus from './databus'
 import easeljs from './libs/easeljs.min'
 import tips from './tips/tips'
-import gameData from './data/gameData'
 import util from './util'
 
 let stateChanged = function() {}
@@ -23,9 +22,11 @@ export const changeState = function(state, callback) { //切换状态
 
 export const next = function(callback, complete) { //下一关
     let DATA = new databus()
-    if (DATA.level_now == gameData.length - 1) {
+    if (DATA.level_now == DATA.data.length - 1) {
         tips.tip("已经是最后一关", () => {
-            
+            changeState("menu", () => {
+                DATA.gameArea.removeAllChildren()
+            })
         })
     } else {
         DATA.state = ""
@@ -47,8 +48,8 @@ export const changeLevel = function(level, callback, complete) { //切换关卡
     levelNumContainer.addChild(levelNum_bg, levelNum)
     tips.tip(levelNumContainer, () => {
         DATA.state = "playing"
-        DATA.gameData.items = util.computeShapesLocation(gameData[DATA.level_now].items)
-        DATA.gameData.answers = util.computeAnswer(gameData[DATA.level_now])
+        DATA.gameData.items = util.computeShapesLocation(DATA.data[DATA.level_now].items)
+        DATA.gameData.answers = util.computeAnswer(DATA.data[DATA.level_now])
         callback&&callback()
     }, () => {
         complete&&complete()

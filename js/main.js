@@ -40,7 +40,7 @@ function getData() {
           data.push(result[i].attributes.data)
         }
       }
-      let DATA = new databus(data)
+      let DATA = new databus([...data])
       DATA.userInfo = userInfo
       register(stateChanged)
     },

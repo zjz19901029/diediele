@@ -5,6 +5,8 @@ import drawPlayerArea from './playerDrawArea'
 import baseShape from '../data/baseShape'
 import util from '../util'
 import Bmob from '../libs/bmob.js'
+import Tips from '../tips/tips'
+
 
 let DATA
 let createArea
@@ -85,6 +87,8 @@ function drawSelectArea() { //绘制选择图形的区域
 
 function drawSelectShapes(page, pageSize = 3) { //绘制可选择的图形
     let shapes = []
+    let width = 12 * DATA.grid_w //图形区域的总宽度
+    let shapes_width = 0
     for (let i = (page - 1) * pageSize, index = 0; i < page * pageSize; i++, index++) {
         let shape
         switch (baseShape[i].shape) {
@@ -99,9 +103,13 @@ function drawSelectShapes(page, pageSize = 3) { //绘制可选择的图形
         shape.on("click", () => { //选择图形
             addShape(shape)
         })
+        shapes_width += baseShape[i].width * DATA.grid_w
         shape.y = (4 - baseShape[i].height) * DATA.grid_w //以底部对齐
-        shape.x = (index * 4 + (4 - baseShape[i].width) / 2) * DATA.grid_w //每个图形占据4个宽度的位置，并居中
         shapes.push(shape)
+    }
+    let margin = (width - shapes_width) / (pageSize - 1) //计算2个图形中间的间隔
+    for (let i = 0; i < shapes.length; i++) {
+        shapes[i].x = i == 0 ? 0 : (shapes[i - 1].x + shapes[i - 1].localData.width * DATA.grid_w + margin)
     }
     return shapes
 }
@@ -136,8 +144,8 @@ function drawResetButton() { //绘制重置按钮
     button.x = (canvas.width / 2 - 100) / 2
     button.y = canvas.height - 40 - 20
     button.on("click", () => {
-        gameData = []
-        playerStage.setData(gameData)
+        gameData.length = 0
+        playerStage.clearData()
     })
     createArea.addChild(button)
 }
@@ -171,7 +179,9 @@ function drawSubmitButton() { //绘制提交按钮
             success: function(result) {
                 // 添加成功，返回成功之后的objectId（注意：返回的属性名字是id，不是objectId），你还可以在Bmob的Web管理后台看到对应的数据
                 console.log("创建成功, objectId:" + result.id)
+                playerStage.stop()
                 loading = false
+                Tips.tip("创建成功", () => {}, drawPlayerShapes)
             },
             error: function(result, error) {
                 // 添加失败
