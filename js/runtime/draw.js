@@ -1,4 +1,3 @@
-
 import databus from '../databus'
 import drawShapes from './drawShapes'
 import easeljs from '../libs/easeljs.min'
@@ -25,35 +24,23 @@ function drawMenuButton() { //绘制菜单按钮
     DATA.gameArea.addChild(button)
 }
 
-function drawAnswer() { //绘制答案图形，使答案居中
-    let answer = gameData.answers[0].split("|")
-    let shapes = []
-    let minX, minY, maxX
-    for (let i = 0; i < answer.length; i++) {
-        shapes[i] = {...gameData.items[i]}
-        let x = +answer[i].split(",")[0]
-        let y = +answer[i].split(",")[1]
-        shapes[i].x = x
-        shapes[i].y = y
-        if (!minX || x < minX) { //判断当前图形的左边X坐标是否是整体的最左边
-            minX = x
-        }
-        if (!maxX || x + shapes[i].width > maxX) { //判断当前图形的右边X坐标是否是整体的最右边
-            maxX = x + shapes[i].width
-        }
-        if (!minY || y < minY) { //判断当前图形的上边Y坐标是否是整体的最上边
-            minY = y
-        }
+function drawAnswerArea() { //绘制答案图形，使答案居中
+    let answerCanvasData = drawShapes.drawAnswer(gameData)
+    let scale = 1
+    if (answerCanvasData.width > DATA.answerCanvas.width) { //答案图形超出范围
+        scale = DATA.answerCanvas.width / answerCanvasData.width
+    } else if (answerCanvasData.height > DATA.answerCanvas.height) { //取宽高中 较小的 缩放比例
+        let scaleY = scale = DATA.answerCanvas.height / answerCanvasData.height
+        scale = scaleY < scale ? scaleY : scale
     }
-    let finalX = Math.ceil((DATA.answerCanvasWidth / DATA.grid_w - (maxX - minX)) / 2) //计算最终位移的X坐标
-    let finalY = 0 //计算最终位移的Y坐标
-    let minusX = finalX - minX //根据最小X坐标计算应该整体位移的X值
-    let minusY = finalY - minY //根据最小Y坐标计算应该整体位移的Y值
-    shapes.map((shape) => { //所有图形整体位移
-        shape.x += minusX
-        shape.y += minusY
-    })
-    let answerArea = new easeljs.Bitmap(drawShapes(shapes))
+    let finalWidth = answerCanvasData.width * scale //缩放之后的宽高
+    let finalHeight = answerCanvasData.height * scale
+    let x = (DATA.answerCanvas.width - finalWidth) / 2
+    let y = (DATA.answerCanvas.height - finalHeight) / 2
+    let answerImg = new easeljs.Bitmap(answerCanvasData.canvas)
+    answerImg.setTransform(x, y, scale, scale)
+    let answerArea = new easeljs.Container()
+    answerArea.addChild(answerImg)
     answerArea.x = DATA.answerCanvasOffset.left
     answerArea.y = DATA.answerCanvasOffset.top
     DATA.gameArea.addChild(answerArea)
@@ -81,7 +68,7 @@ function draw() {
         return
     }
     drawMenuButton()
-    drawAnswer()
+    drawAnswerArea()
     drawPlayerShapes()
     DATA.stage.update()
 }

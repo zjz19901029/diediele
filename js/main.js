@@ -10,24 +10,53 @@ import gameData from './data/gameData'
 let userInfo
 
 function init() { //初始化
+  wx.showNavigationBarLoading = wx.hideNavigationBarLoading = function() {}
+  Bmob.initialize("6a573f6fd54fbb1a79a891371c67cf11", "01f70367729ab78188786f12f455e270")
   wx.login({
-      success: function () {
-        wx.getUserInfo({
-          success: function (res) {
-            userInfo = res
-            getData()
-          }
-        })
+    success: function(res) {
+      if (res.code) {
+          Bmob.User.requestOpenId(res.code, {//获取userData(根据个人的需要，如果需要获取userData的需要在应用密钥中配置你的微信小程序AppId和AppSecret，且在你的项目中要填写你的appId)
+            success: function(userData) {
+                wx.getUserInfo({
+                    success: function(result) {
+                      var nickName = result.userInfo.nickName
+  
+                      var user = new Bmob.User();//开始注册用户
+                      user.set("username", userData.openid);
+                      user.set("password", userData.openid);//因为密码必须提供，但是微信直接登录小程序是没有密码的，所以用openId作为唯一密码
+                      user.set("userData", userData);
+                      user.set("nickname", nickName);
+                      user.signUp(null, {
+                          success: function(res) {
+                            console.log("注册成功!");
+                          },
+                          error: function(userData, error) {
+                            console.log(error)
+                          }
+                      });
+                      userInfo = result
+                      getData()
+                    }
+                })
+            },
+            error: function(error) {
+                // Show the error message somewhere
+                console.log("Error: " + error.code + " " + error.message);
+            }
+        });
+  
+      } else {
+        console.log('获取用户登录态失败！' + res.errMsg)
       }
+    }
   })
 }
 
 function getData() {
-  wx.showNavigationBarLoading = wx.hideNavigationBarLoading = function() {}
-  Bmob.initialize("6a573f6fd54fbb1a79a891371c67cf11", "01f70367729ab78188786f12f455e270")
   let GameData = Bmob.Object.extend("gameData")
   let query = new Bmob.Query(GameData)
   query.limit(10)
+  query.equalTo("enable", true)
   query.find({
     success: function(result) {
       console.log(result)

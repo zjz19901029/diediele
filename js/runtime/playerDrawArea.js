@@ -22,7 +22,7 @@ export default class playerDrawArea { //生成用户操作的区域
             onChangeCb&&onChangeCb(this.data)
         })
         this.ticker = easeljs.Ticker.addEventListener("tick",() => {
-            let shapeCanvas = drawShapes(this.data)
+            let shapeCanvas = drawShapes.drawShapes(this.data)
             canvas.getContext("2d").clearRect(this.x, this.y, this.width, this.height)
             canvas.getContext("2d").drawImage(bgCanvas, 0, 0, this.width, this.height, this.x, this.y, this.width, this.height)
             canvas.getContext("2d").drawImage(shapeCanvas, 0, 0, this.width, this.height, this.x, this.y, this.width, this.height)
