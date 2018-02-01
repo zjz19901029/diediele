@@ -2,13 +2,17 @@ import databus from './databus'
 import draw from './runtime/draw'
 import menu from './runtime/menu'
 import createMission from './runtime/createMission'
-import bindEvent from './event/event'
 import Bmob from './libs/bmob.js'
 import {register} from './statebus'
-import gameData from './data/gameData'
+import {queryDataById, queryData} from './data/gameData'
 import util from './util'
 
 let userInfo
+let userData
+let DATA
+let lastLevel //上一次关卡位置
+let fileManager = wx.getFileSystemManager()
+let path = `${wx.env.USER_DATA_PATH}/userData.txt` //用户数据保存文件路径
 
 function init() { //初始化
   wx.showNavigationBarLoading = wx.hideNavigationBarLoading = function() {}
@@ -20,23 +24,23 @@ function init() { //初始化
             success: function(userData) {
                 wx.getUserInfo({
                     success: function(result) {
-                      var nickName = result.userInfo.nickName
-  
-                      var user = new Bmob.User();//开始注册用户
-                      user.set("username", userData.openid);
-                      user.set("password", userData.openid);//因为密码必须提供，但是微信直接登录小程序是没有密码的，所以用openId作为唯一密码
-                      user.set("userData", userData);
-                      user.set("nickname", nickName);
-                      user.signUp(null, {
-                          success: function(res) {
-                            console.log("注册成功!");
-                          },
-                          error: function(userData, error) {
-                            console.log(error)
-                          }
-                      });
-                      userInfo = result
-                      getData()
+						var nickName = result.userInfo.nickName
+	
+						var user = new Bmob.User();//开始注册用户
+						user.set("username", userData.openid);
+						user.set("password", userData.openid);//因为密码必须提供，但是微信直接登录小程序是没有密码的，所以用openId作为唯一密码
+						user.set("userData", userData);
+						user.set("nickname", nickName);
+						user.signUp(null, {
+							success: function(res) {
+								console.log("注册成功!");
+							},
+							error: function(userData, error) {
+								console.log(error)
+							}
+						});
+						userInfo = result
+						getData()
                     }
                 })
             },
@@ -53,74 +57,91 @@ function init() { //初始化
   })
 }
 
-function getData() {
-  let GameData = Bmob.Object.extend("gameData")
-  let query = new Bmob.Query(GameData)
-  query.limit(10)
-  query.equalTo("enable", true)
-  query.find({
-    success: function(result,res) {
-      console.log(result)
-    // The object was retrieved successfully.
-      let data = []
-      if (result.length == 0) {
-        data = gameData
-      } else {
-        for (let i = 0; i < result.length; i++) {
-          result[i].attributes.data.id = result[i].id
-          data.push(result[i].attributes.data)
-        }
-      }
-      let DATA = new databus([...data])
-      DATA.userInfo = userInfo
-      register(stateChanged) //注册状态切换事件
-      let shareId = wx.getLaunchOptionsSync().query.levelid //获取分享的levelid
-      shareId = "0d5a7c9cbf"
-      if (shareId) {
-        getShareData(shareId)
-      } else {
-        draw()
-      }
-    },
-    error: function(result, error) {
-        console.log("查询失败")
-    }
-  })
+function getData() { //获取关卡数据
+	fileManager.readFile({ //读取本地文件
+		filePath: path,
+		encoding: "utf8",
+		success(data) { //成功读取
+			userData =  JSON.parse(data.data)
+			console.log(userData)
+		},
+		fail() { //读取失败，文件不存在则新建
+			fileManager.writeFileSync(path, JSON.stringify({
+				gameData: [],
+				userMission: {}
+			}), "utf8") 
+		},
+		complete() {
+			lastLevel = wx.getStorageSync("lastLevel") ? wx.getStorageSync("lastLevel") : 0 //获取用户上次的游戏关卡
+			if (!userData || userData.gameData.length == 0) { //如果没有本地数据,则从服务器请求
+				userData = {
+					gameData: [],
+					userMission: {}
+				}
+				getServerData()
+			} else {
+				start()
+			}
+		}
+	})
+	
+	wx.exitMiniProgram({ // 退出游戏的时候，保存游戏数据
+		complete() {
+			if (!DATA || !DATA.userData) {
+				return false
+			}
+			fileManager.writeFileSync(path, JSON.stringify(DATA.userData), "utf8") //写入文件
+		}
+	})
+}
+
+function getServerData(start = 0, size = 20) { //从服务器获取关卡数据
+	queryData(start, size, (res) => {
+		if (res) {
+			userData.gameData = userData.gameData.concat(res) //将新的数据拼接在本地数据后
+			fileManager.writeFileSync(path, JSON.stringify(userData), "utf8") //写入文件
+			start()
+		}
+	})
 }
 
 function getShareData(id) {
-  let GameData = Bmob.Object.extend("gameData")
-  let query = new Bmob.Query(GameData)
-  query.equalTo("objectId", id)
-  query.find({
-    success: function(result,res) {
-      console.log(result)
-    // The object was retrieved successfully.
-      let data = {
-        items: util.computeShapesLocation(result[0].attributes.data.items),
-        answers: util.computeAnswer(result[0].attributes.data),
-        userinfo: result[0].attributes.data.userinfo
-      }
-      draw(data)
-    },
-    error: function(result, error) {
-        console.log("查询失败")
-    }
-  })
+	queryDataById(id, (res) => {
+		if (res) {
+			let data = {
+				items: util.computeShapesLocation(res.data.items),
+				answers: util.computeAnswer(res.data),
+				userinfo: res.data.userinfo
+			}
+			draw(data)
+		}
+	})
+}
+
+function start() { //开始游戏
+	DATA = new databus([...userData.gameData], lastLevel)
+	DATA.userInfo = userInfo
+	register(stateChanged) //注册状态切换事件
+	let shareId = wx.getLaunchOptionsSync().query.levelid //获取分享的levelid
+	if (shareId) { //判断是否通过分享关卡进入
+		getShareData(shareId)
+	} else {
+		draw()
+	}
 }
 
 function stateChanged(state) {
-  switch (state) {
-    case "playing":
-      draw()
-      break
-    case "menu":
-      menu()
-      break
-    case "create":
-      createMission()
-      break
-  }
+	switch (state) {
+		case "playing":
+			draw()
+			break
+		case "menu":
+			menu()
+			break
+		case "create":
+			createMission()
+			break
+	}
 }
 
 export default init
