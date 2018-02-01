@@ -8,7 +8,7 @@ let instance
  * 全局状态管理器
  */
 export default class DataBus {
-  	constructor(data) {
+  	constructor(data, level = 0) {
 		if ( instance )
 		return instance
 
@@ -40,13 +40,12 @@ export default class DataBus {
 			this.maskArea.alpha = this.tweenParams.maskOpacity
 			this.stage.update()
 		})
-
+		this.level_now = level
 		this.init()
 	}
 
 	init() {
 		this.state = "playing" //当前游戏状态
-		this.level_now = 0
 		this.window_w = canvas.width
 		this.window_h = canvas.height
 		this.playerCanvas = {} //玩家区域画布
@@ -75,7 +74,8 @@ export default class DataBus {
 		
 		this.gameData = {
 			items: util.computeShapesLocation(this.data[this.level_now].items),
-			answers: util.computeAnswer(this.data[this.level_now])
+			answers: util.computeAnswer(this.data[this.level_now]),
+			userinfo: this.data[this.level_now].userinfo
 		}
 
 	}

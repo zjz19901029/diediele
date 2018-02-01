@@ -8,7 +8,6 @@ let stateChanged = function() {}
 export const register = function(callback) { //注册状态切换事件
     let DATA = new databus()
     stateChanged = callback
-    callback(DATA.state)
 }
 
 export const changeState = function(state, callback) { //切换状态

@@ -3,19 +3,20 @@ import easeljs from '../libs/easeljs.min'
 import util from '../util'
 import {changeState} from '../statebus'
 
+let DATA
+
 function menu() {
-    let DATA = new databus()
+    DATA = new databus()
     drawMissions()
     createAnswerButton()
     DATA.stage.update()
 }
 
-function drawMissions() {
-
+function drawMissions() { //绘制关卡选择
+    
 }
 
-function createAnswerButton() {
-    let DATA = new databus()
+function createAnswerButton() { //绘制出题按钮
     let button_w = 100
     let button_h = 40
     let y = 400

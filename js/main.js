@@ -6,6 +6,7 @@ import bindEvent from './event/event'
 import Bmob from './libs/bmob.js'
 import {register} from './statebus'
 import gameData from './data/gameData'
+import util from './util'
 
 let userInfo
 
@@ -58,7 +59,7 @@ function getData() {
   query.limit(10)
   query.equalTo("enable", true)
   query.find({
-    success: function(result) {
+    success: function(result,res) {
       console.log(result)
     // The object was retrieved successfully.
       let data = []
@@ -66,12 +67,41 @@ function getData() {
         data = gameData
       } else {
         for (let i = 0; i < result.length; i++) {
+          result[i].attributes.data.id = result[i].id
           data.push(result[i].attributes.data)
         }
       }
       let DATA = new databus([...data])
       DATA.userInfo = userInfo
-      register(stateChanged)
+      register(stateChanged) //注册状态切换事件
+      let shareId = wx.getLaunchOptionsSync().query.levelid //获取分享的levelid
+      shareId = "0d5a7c9cbf"
+      if (shareId) {
+        getShareData(shareId)
+      } else {
+        draw()
+      }
+    },
+    error: function(result, error) {
+        console.log("查询失败")
+    }
+  })
+}
+
+function getShareData(id) {
+  let GameData = Bmob.Object.extend("gameData")
+  let query = new Bmob.Query(GameData)
+  query.equalTo("objectId", id)
+  query.find({
+    success: function(result,res) {
+      console.log(result)
+    // The object was retrieved successfully.
+      let data = {
+        items: util.computeShapesLocation(result[0].attributes.data.items),
+        answers: util.computeAnswer(result[0].attributes.data),
+        userinfo: result[0].attributes.data.userinfo
+      }
+      draw(data)
     },
     error: function(result, error) {
         console.log("查询失败")
