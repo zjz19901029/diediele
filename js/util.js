@@ -161,6 +161,23 @@ let util = {
         text.mouseEnabled = false
         button.addChild(button_bg, text)
         return button
+    },
+
+    scaleImg(canvasData, width, height) { //缩放canvas上的图片，生成根据外部容器等比缩放后的图片
+        let scale = 1
+        if (canvasData.width > width) { //答案图形超出范围
+            scale = width / canvasData.width
+        } else if (canvasData.height > height) { //取宽高中 较小的 缩放比例
+            let scaleY = scale = height / canvasData.height
+            scale = scaleY < scale ? scaleY : scale
+        }
+        let finalWidth = canvasData.width * scale //缩放之后的宽高
+        let finalHeight = canvasData.height * scale
+        let answerImg = new easeljs.Bitmap(canvasData.canvas)
+        answerImg.width = finalWidth
+        answerImg.height = finalHeight
+        answerImg.setTransform(0, 0, scale, scale)
+        return answerImg
     }
 }
 export default util

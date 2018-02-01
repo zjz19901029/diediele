@@ -4,6 +4,7 @@ import easeljs from '../libs/easeljs.min'
 import drawPlayerArea from './playerDrawArea'
 import judge from '../judge/judge'
 import {next, changeState} from '../statebus'
+import util from '../util'
 
 let playerStage
 let DATA
@@ -28,19 +29,9 @@ function drawMenuButton() { //绘制菜单按钮
 
 function drawAnswerArea() { //绘制答案图形，使答案居中
     let answerCanvasData = drawShapes.drawAnswer(gameData)
-    let scale = 1
-    if (answerCanvasData.width > DATA.answerCanvas.width) { //答案图形超出范围
-        scale = DATA.answerCanvas.width / answerCanvasData.width
-    } else if (answerCanvasData.height > DATA.answerCanvas.height) { //取宽高中 较小的 缩放比例
-        let scaleY = scale = DATA.answerCanvas.height / answerCanvasData.height
-        scale = scaleY < scale ? scaleY : scale
-    }
-    let finalWidth = answerCanvasData.width * scale //缩放之后的宽高
-    let finalHeight = answerCanvasData.height * scale
-    let x = (DATA.answerCanvas.width - finalWidth) / 2
-    let y = (DATA.answerCanvas.height - finalHeight) / 2
-    let answerImg = new easeljs.Bitmap(answerCanvasData.canvas)
-    answerImg.setTransform(x, y, scale, scale)
+    let answerImg = util.scaleImg(answerCanvasData, DATA.answerCanvas.width, DATA.answerCanvas.height)
+    answerImg.x = (DATA.answerCanvas.width - answerImg.width) / 2
+    answerImg.y = (DATA.answerCanvas.height - answerImg.height) / 2
     let answerArea = new easeljs.Container()
     answerArea.addChild(answerImg)
     answerArea.x = DATA.answerCanvasOffset.left

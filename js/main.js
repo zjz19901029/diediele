@@ -120,6 +120,7 @@ function getShareData(id) {
 
 function start() { //开始游戏
 	DATA = new databus([...userData.gameData], lastLevel)
+	DATA.userData = userData
 	DATA.userInfo = userInfo
 	register(stateChanged) //注册状态切换事件
 	let shareId = wx.getLaunchOptionsSync().query.levelid //获取分享的levelid
