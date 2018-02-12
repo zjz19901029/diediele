@@ -24,16 +24,16 @@ export default class playerDrawArea { //生成用户操作的区域
         this.ticker = easeljs.Ticker.addEventListener("tick",() => {
             let shapeCanvas = drawShapes.drawShapes(this.data)
             canvas.getContext("2d").clearRect(this.x, this.y, this.width, this.height)
-            canvas.getContext("2d").drawImage(bgCanvas, 0, 0, this.width, this.height, this.x, this.y, this.width, this.height)
+            canvas.getContext("2d").drawImage(bgCanvas, 0, 0, this.width + 1, this.height + 1, this.x, this.y, this.width , this.height)
             canvas.getContext("2d").drawImage(shapeCanvas, 0, 0, this.width, this.height, this.x, this.y, this.width, this.height)
         })
     }
 
-    drawBg() {
+    drawBg() { //绘制背景网格
         let DATA = new databus()
         let bgCanvas = wx.createCanvas()
-        bgCanvas.width = this.width
-        bgCanvas.height = this.height
+        bgCanvas.width = this.width + 1
+        bgCanvas.height = this.height + 1
         let bg_ctx = bgCanvas.getContext("2d")
         bg_ctx.beginPath()
         bg_ctx.strokeStyle = "#666"
@@ -42,7 +42,7 @@ export default class playerDrawArea { //生成用户操作的区域
         bg_ctx.fill()
         bg_ctx.closePath()
         bg_ctx.beginPath()
-        bg_ctx.rect(0, 0, this.width, this.height)
+        bg_ctx.rect(1, 1, this.width, this.height)
         bg_ctx.stroke()
         bg_ctx.closePath()
         bg_ctx.fillStyle = "#ccc"

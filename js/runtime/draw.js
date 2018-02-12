@@ -11,20 +11,31 @@ let DATA
 let gameData
 let timeInterval
 let totalTime = 0
+let timeText
 
 function drawMenuButton() { //绘制菜单按钮
+    let buttonCanvas = wx.createCanvas()
+    let buttonStage = new easeljs.Stage(buttonCanvas)
     let button = new easeljs.Shape()
-    button.graphics.s("#000").arc(25, 25, 25, 0, 2*Math.PI)
-    button.graphics.f("#000").arc(25, 25, 15, 0, 2*Math.PI)
-    button.x = 20
-    button.y = 20
-    button.on("click", () => {
+    button.graphics.s("#000").rect(1, 1, 80, 80)
+    button.graphics.f("#000").rect(16, 16, 50, 50)
+    button.x = 0
+    button.y = 0
+    buttonStage.addChild(button)
+    buttonStage.update()
+    let buttonImg = new easeljs.Bitmap(buttonCanvas)
+    buttonImg.setTransform(0, 0, 0.5, 0.5)
+    buttonImg.cache(0, 0, 150, 150)
+    buttonImg.x = 20
+    buttonImg.y = 20
+    buttonImg.on("click", () => {
         playerStage.stop()
         changeState("menu", () => {
             DATA.gameArea.removeAllChildren()
         })
     })
-    DATA.gameArea.addChild(button)
+
+    DATA.gameArea.addChild(buttonImg)
 }
 
 function drawAnswerArea() { //绘制答案图形，使答案居中
@@ -58,14 +69,17 @@ function drawPlayerShapes() { //绘制用户的图形
 }
 
 function countTime() { //计时
-    let m = ("0" + Math.floor(totalTime / 60)).slice(-2)
-    let s = ("0" + totalTime % 60).slice(-2)
-    let timeText = new easeljs.Text(m + " : " + s, "20px Arial", "#000")
-    timeText.y = 20
-    timeText.x = canvas.width / 2
-    timeText.textAlign = "center"
-    timeText.textBaseline = "middle"
-    DATA.gameArea.addChild(timeText)
+    if (!timeText) {
+        let m = ("0" + Math.floor(totalTime / 60)).slice(-2)
+        let s = ("0" + totalTime % 60).slice(-2)
+        timeText = new easeljs.Text(m + " : " + s, "20px Arial", "#000")
+        timeText.y = 20
+        timeText.x = canvas.width / 2
+        timeText.textAlign = "center"
+        timeText.textBaseline = "middle"
+        DATA.gameArea.addChild(timeText)
+    }
+    timeInterval&&clearInterval(timeInterval)
     timeInterval = setInterval(() => {
         totalTime++
         let m = ("0" + Math.floor(totalTime / 60)).slice(-2)

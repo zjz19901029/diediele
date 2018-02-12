@@ -32,18 +32,28 @@ function createMission() {
 }
 
 function drawMenuButton() { //绘制菜单按钮
+    let buttonCanvas = wx.createCanvas()
+    let buttonStage = new easeljs.Stage(buttonCanvas)
     let button = new easeljs.Shape()
-    button.graphics.s("#000").arc(25, 25, 25, 0, 2*Math.PI)
-    button.graphics.f("#000").arc(25, 25, 15, 0, 2*Math.PI)
-    button.x = 20
-    button.y = 20
-    button.on("click", () => {
+    button.graphics.s("#000").rect(1, 1, 80, 80)
+    button.graphics.f("#000").rect(16, 16, 50, 50)
+    button.x = 0
+    button.y = 0
+    buttonStage.addChild(button)
+    buttonStage.update()
+    let buttonImg = new easeljs.Bitmap(buttonCanvas)
+    buttonImg.setTransform(0, 0, 0.5, 0.5)
+    buttonImg.cache(0, 0, 150, 150)
+    buttonImg.x = 20
+    buttonImg.y = 20
+    buttonImg.on("click", () => {
         playerStage.stop()
         changeState("menu", () => {
             createArea.removeAllChildren()
         })
     })
-    createArea.addChild(button)
+
+    createArea.addChild(buttonImg)
 }
 
 function drawPlayerShapes() { //绘制用户的图形
