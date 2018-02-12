@@ -43,14 +43,16 @@ function drawPlayerShapes() { //绘制用户的图形
     let shapes = DATA.gameData.items
     playerStage = new drawPlayerArea(shapes, DATA.playerCanvasOffset.left, DATA.playerCanvasOffset.top, DATA.playerCanvasWidth, DATA.playerCanvasHeight, function(data) {
         if (judge.judgeSuccess(data, DATA.gameData.answers)) { //过关
-            playerStage.stop()
-            timeInterval && clearInterval(timeInterval)
-            console.log("success")
-            next(() => {
-                DATA.gameArea.removeAllChildren()
-            }, () => {
-                draw()
-            })
+            setTimeout(() => {
+                playerStage.stop()
+                timeInterval && clearInterval(timeInterval)
+                console.log("success")
+                next(() => {
+                    DATA.gameArea.removeAllChildren()
+                }, () => {
+                    draw()
+                })
+            },200)
         }
     })
 }

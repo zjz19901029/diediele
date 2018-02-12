@@ -13,7 +13,7 @@ export const register = function(callback) { //注册状态切换事件
 export const changeState = function(state, callback) { //切换状态
     let DATA = new databus()
     tips.showMask(() => {
-        DATA.state = "playing"
+        DATA.state = state
         callback&&callback()
         stateChanged(state)
     })

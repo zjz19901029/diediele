@@ -177,6 +177,7 @@ let util = {
         answerImg.width = finalWidth
         answerImg.height = finalHeight
         answerImg.setTransform(0, 0, scale, scale)
+        answerImg.cache(0, 0, canvasData.width, canvasData.height)
         return answerImg
     }
 }

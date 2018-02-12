@@ -11,7 +11,6 @@ export const queryData = function(start = 0, size = 20, callback) {
 	query.equalTo("enable", true)
 	query.find({
 		success: function(result,res) {
-			console.log(result)
 			// The object was retrieved successfully.
 			let data = []
             for (let i = 0; i < result.length; i++) {
