@@ -40,12 +40,12 @@ export default class DataBus {
 			this.maskArea.alpha = this.tweenParams.maskOpacity
 			this.stage.update()
 		})
-		this.level_now = level
+		this.setLevel(level)
 		this.init()
 	}
 
 	init() {
-		this.state = "playing" //当前游戏状态
+		this.state = "play" //当前游戏状态
 		this.window_w = canvas.width
 		this.window_h = canvas.height
 		this.playerCanvas = {} //玩家区域画布
@@ -71,12 +71,15 @@ export default class DataBus {
 		}
 		
 		this.ctx_bg = canvas.getContext('2d')
-		
-		this.gameData = {
-			items: util.computeShapesLocation(this.data[this.level_now].items),
-			answers: util.computeAnswer(this.data[this.level_now]),
-			userinfo: this.data[this.level_now].userinfo
-		}
+	}
 
+	setLevel(level) { //选择关卡后，设置当前关卡数据
+		if(!this.gameData) {
+			this.gameData = {}
+		}
+		this.level_now = level
+		this.gameData.items = util.computeShapesLocation(this.data[this.level_now].items)
+		this.gameData.answers = util.computeAnswer(this.data[this.level_now])
+		this.gameData.userinfo = this.data[this.level_now].userinfo
 	}
 }

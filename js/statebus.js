@@ -35,20 +35,18 @@ export const next = function(callback, complete) { //下一关
 
 export const changeLevel = function(level, callback, complete) { //切换关卡
     let DATA = new databus()
-    DATA.level_now = level
     let levelNumContainer = new easeljs.Container()
     let levelNum_bg = new easeljs.Shape() //关数背景圆
     levelNum_bg.graphics.f("#000").a(DATA.window_w / 2, DATA.window_h / 2, 80, 0, 2*Math.PI)
-    let levelNum = new easeljs.Text(DATA.level_now + 1, "50px Arial", "#fff")
+    let levelNum = new easeljs.Text(level + 1, "50px Arial", "#fff")
     levelNum.x = DATA.window_w / 2
     levelNum.y = DATA.window_h / 2
     levelNum.textAlign = "center"
     levelNum.textBaseline = "middle"
     levelNumContainer.addChild(levelNum_bg, levelNum)
     tips.tip(levelNumContainer, () => {
-        DATA.state = "playing"
-        DATA.gameData.items = util.computeShapesLocation(DATA.data[DATA.level_now].items)
-        DATA.gameData.answers = util.computeAnswer(DATA.data[DATA.level_now])
+        DATA.state = "play"
+        DATA.setLevel(level)
         callback&&callback()
     }, () => {
         complete&&complete()

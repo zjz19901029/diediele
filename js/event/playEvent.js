@@ -12,7 +12,7 @@ function bindTouchEvent(shapes, x, y, onMove, onChange) { //绑定触摸事件�
     startListener && DATA.stage.off("mousedown", startListener)
     // shape.on("mousedown", (e) => {
     //     console.log(123123)
-    //     if (DATA.state != "playing") { //当前禁止操作
+    //     if (DATA.state != "play") { //当前禁止操作
     //         return false
     //     }
     //     startX = e.stageX
@@ -20,7 +20,7 @@ function bindTouchEvent(shapes, x, y, onMove, onChange) { //绑定触摸事件�
     //     targetItem = shape
     // })
     startListener = DATA.stage.on("mousedown", (e) => {
-        if (DATA.state != "playing" && DATA.state != "create") { //当前禁止操作
+        if (DATA.state != "play" && DATA.state != "create") { //当前禁止操作
             return false
         }
         startX = e.stageX
@@ -35,7 +35,7 @@ function bindTouchEvent(shapes, x, y, onMove, onChange) { //绑定触摸事件�
     })
 
     moveListener = DATA.stage.on("pressmove", (e) => {
-        if (!targetItem || (DATA.state != "playing" && DATA.state != "create")) { //当前禁止操作
+        if (!targetItem || (DATA.state != "play" && DATA.state != "create")) { //当前禁止操作
             return false
         }
         targetItem.x += (e.stageX - startX) / DATA.grid_w
@@ -46,7 +46,7 @@ function bindTouchEvent(shapes, x, y, onMove, onChange) { //绑定触摸事件�
     })
 
     upListener = DATA.stage.on("pressup", (e) => {
-        if (!targetItem || (DATA.state != "playing" && DATA.state != "create")) { //当前禁止操作
+        if (!targetItem || (DATA.state != "play" && DATA.state != "create")) { //当前禁止操作
             return false
         }
         targetItem&&judge.getItemStay(targetItem)
@@ -56,7 +56,7 @@ function bindTouchEvent(shapes, x, y, onMove, onChange) { //绑定触摸事件�
     })
 
     // wx.onTouchStart(function(e) {
-    //     if (DATA.state != "playing") { //当前禁止操作
+    //     if (DATA.state != "play") { //当前禁止操作
     //         return false
     //     }
     //     let shapes = gameData.items
@@ -71,7 +71,7 @@ function bindTouchEvent(shapes, x, y, onMove, onChange) { //绑定触摸事件�
     // })
 
     // wx.onTouchMove(function(e) {
-    //     if (!targetItem || DATA.state != "playing") {
+    //     if (!targetItem || DATA.state != "play") {
     //         return false
     //     }
     //     targetItem.x += (e.touches[0].clientX - startX) / DATA.grid_w
@@ -81,7 +81,7 @@ function bindTouchEvent(shapes, x, y, onMove, onChange) { //绑定触摸事件�
     // })
 
     // wx.onTouchEnd(function() {
-    //     if (!targetItem || DATA.state != "playing") {
+    //     if (!targetItem || DATA.state != "play") {
     //         return
     //     }
     //     targetItem&&judge.getItemStay(targetItem)

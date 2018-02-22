@@ -32,6 +32,7 @@ function menu() {
     drawMissions()
     selectMissionEvent()
     createAnswerButton()
+    selectMissionButton()
     DATA.stage.update()
 }
 
@@ -58,6 +59,7 @@ function selectMissionEvent() { //选择关卡操作事件
         let finalX = Math.round(missionsAreaPosition.x / perWidth) * perWidth
         finalX = finalX > 0 ? 0 : finalX
         tweenjs.Tween.get(missionsAreaPosition).to({x: finalX}, 0.1).call(() => {
+            selectedMission = Math.abs(Math.round(missionsAreaPosition.x / perWidth)) //通过移动的距离计算出选择的关卡
             isSelecting = false
         })
     })
@@ -66,12 +68,27 @@ function selectMissionEvent() { //选择关卡操作事件
 function createAnswerButton() { //绘制出题按钮
     let button_w = 100
     let button_h = 40
-    let y = 400
+    let y = 480
     let button = util.drawButton("我来出题", button_w, button_h)
     button.x = (DATA.window_w - button_w) / 2
     button.y = y
     button.on("click", () => { //跳转出题界面
         changeState("create", destory)
+    })
+    DATA.menuArea.addChild(button)
+}
+
+function selectMissionButton() { //绘制选择关卡按钮
+    let button_w = 100
+    let button_h = 40
+    let y = 400
+    let button = util.drawButton("开始游戏", button_w, button_h)
+    button.x = (DATA.window_w - button_w) / 2
+    button.y = y
+    button.on("click", () => { //跳转出题界面
+        console.log(selectedMission)
+        DATA.setLevel(selectedMission)
+        changeState("play", destory)
     })
     DATA.menuArea.addChild(button)
 }

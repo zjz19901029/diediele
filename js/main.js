@@ -157,7 +157,7 @@ function start() { //开始游戏
 
 function stateChanged(state) {
 	switch (state) {
-		case "playing":
+		case "play":
 			draw()
 			break
 		case "menu":

@@ -101,7 +101,7 @@ function drawMissionUser() { //绘制当前出题用户
 function draw(data) {
     DATA = new databus()
     gameData = data ? data : DATA.gameData
-    if (DATA.state != "playing") {
+    if (DATA.state != "play") {
         return
     }
     drawMenuButton()
