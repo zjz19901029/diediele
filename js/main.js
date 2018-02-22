@@ -61,54 +61,18 @@ function getData() { //获取关卡数据
 		gameData: [],
 		userMission: {}
 	}
-	getServerData()
-	console.log()
 	try {
 		userData = JSON.parse(fileManager.readFileSync(path, "utf8"))
 	} catch(e) {
-		fileManager.writeFileSync(path, JSON.stringify({
-			gameData: [],
-			userMission: {}
-		}), "utf8")
+		fileManager.writeFileSync(path, JSON.stringify(userData), "utf8")
 	}
 	lastLevel = wx.getStorageSync("lastLevel") ? wx.getStorageSync("lastLevel") : 0 //获取用户上次的游戏关卡
 	if (!userData || userData.gameData.length == 0) { //如果没有本地数据,则从服务器请求
-		userData = {
-			gameData: [],
-			userMission: {}
-		}
 		getServerData()
 	} else {
 		start()
 	}
 	return
-	fileManager.readFile({ //读取本地文件
-		filePath: path,
-		encoding: "utf8",
-		success(data) { //成功读取
-			userData =  JSON.parse(data.data)
-			console.log(userData)
-		},
-		fail() { //读取失败，文件不存在则新建
-			fileManager.writeFileSync(path, JSON.stringify({
-				gameData: [],
-				userMission: {}
-			}), "utf8") 
-		},
-		complete() {
-			lastLevel = wx.getStorageSync("lastLevel") ? wx.getStorageSync("lastLevel") : 0 //获取用户上次的游戏关卡
-			if (!userData || userData.gameData.length == 0) { //如果没有本地数据,则从服务器请求
-				userData = {
-					gameData: [],
-					userMission: {}
-				}
-				getServerData()
-			} else {
-				start()
-			}
-		}
-	})
-	
 	wx.exitMiniProgram({ // 退出游戏的时候，保存游戏数据
 		success() {
 			if (!DATA || !DATA.userData) {

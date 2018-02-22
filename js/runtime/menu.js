@@ -56,8 +56,9 @@ function selectMissionEvent() { //选择关卡操作事件
     bindEvent(missionsAreaPosition, () => {
         isSelecting = true
     }, () => {
+        let maxX = 0 - (missionData.length - 1) * perWidth //可移动到的最大距离，即是最后一个关卡的位置
         let finalX = Math.round(missionsAreaPosition.x / perWidth) * perWidth
-        finalX = finalX > 0 ? 0 : finalX
+        finalX = finalX > 0 ? 0 : (finalX < maxX ? maxX : finalX)
         tweenjs.Tween.get(missionsAreaPosition).to({x: finalX}, 0.1).call(() => {
             selectedMission = Math.abs(Math.round(missionsAreaPosition.x / perWidth)) //通过移动的距离计算出选择的关卡
             isSelecting = false
